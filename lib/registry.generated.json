@@ -1,0 +1,648 @@
+{
+  "generatedAt": "2026-10-01T12:34:17.680Z",
+  "assets": [
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "NVDAx",
+          "address": "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "NVDAon",
+          "address": "gEGtLTPNQ7jcg25zTetkbmF7teoDLcrfTnQfmn2ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "NVDA",
+          "address": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+          "decimals": 18,
+          "isin": "US67066G1040",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0x379EC4f7C378F34a1B47E4F3cbeBCbAC3E8E9F15",
+          "pool": {
+            "address": "0xd4EB21209C4D6093f80B5b84f5C45cc093EA14a3",
+            "dex": "uniswap-v3-robinhood",
+            "name": "NVDA / USDG 0.05%",
+            "token0": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "token1": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+            "liquidityUsdAtBuild": 3343726
+          }
+        },
+        {
+          "issuer": "Coinbase",
+          "chain": "base",
+          "symbol": "NVDAc",
+          "address": "0xb20000000000000000000078ee7ce2fE4908108C",
+          "decimals": 8,
+          "multiplierModel": "b20-uiMultiplier",
+          "chainlinkFeed": "0x04689a41629776563E6822F76f2e57D148d28513",
+          "pool": {
+            "address": "0x853F5f1B92b16714Fe6CDA67CAad0856B83C7ab9",
+            "dex": "aerodrome-slipstream-3",
+            "name": "NVDAc / USDC 0.167%",
+            "token0": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "token1": "0xb20000000000000000000078ee7ce2fE4908108C",
+            "liquidityUsdAtBuild": 2281497
+          }
+        }
+      ]
+    },
+    {
+      "ticker": "AAPL",
+      "name": "Apple",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "AAPLx",
+          "address": "XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "AAPLon",
+          "address": "123mYEnRLM2LLYsJW3K6oyYh8uP1fngj732iG638ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "AAPL",
+          "address": "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9",
+          "decimals": 18,
+          "isin": "US0378331005",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0x6B22A786bAa607d76728168703a39Ea9C99f2cD0",
+          "pool": {
+            "address": "0xAae0d815EE56e4092a5E5C2911E676Fea50B2d6D",
+            "dex": "uniswap-v3-robinhood",
+            "name": "AAPL / USDG 0.05%",
+            "token0": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "token1": "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9",
+            "liquidityUsdAtBuild": 354007
+          }
+        },
+        {
+          "issuer": "Coinbase",
+          "chain": "base",
+          "symbol": "AAPLc",
+          "address": "0xb200000000000000000000C2e324d24d7eEcd1fb",
+          "decimals": 8,
+          "multiplierModel": "b20-uiMultiplier",
+          "chainlinkFeed": "0x787f13dEa48Db0897CbCDD985de77809D837F988",
+          "pool": {
+            "address": "0xA3b1E3f9747065e2073722Ff4c9027d3eA4994F0",
+            "dex": "aerodrome-slipstream-3",
+            "name": "AAPL / USDC 0.11%",
+            "token0": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "token1": "0xb200000000000000000000C2e324d24d7eEcd1fb",
+            "liquidityUsdAtBuild": 1642375
+          }
+        }
+      ]
+    },
+    {
+      "ticker": "TSLA",
+      "name": "Tesla",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "TSLAx",
+          "address": "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "TSLAon",
+          "address": "KeGv7bsfR4MheC1CkmnAVceoApjrkvBhHYjWb67ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "TSLA",
+          "address": "0x322F0929c4625eD5bAd873c95208D54E1c003b2d",
+          "decimals": 18,
+          "isin": "US88160R1014",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0x4A1166a659A55625345e9515b32adECea5547C38",
+          "pool": {
+            "address": "0xf4ACdAEEB7022862A763C9B1B885e11191c889E3",
+            "dex": "uniswap-v3-robinhood",
+            "name": "TSLA / USDG 0.3%",
+            "token0": "0x322F0929c4625eD5bAd873c95208D54E1c003b2d",
+            "token1": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "liquidityUsdAtBuild": 511223
+          }
+        },
+        {
+          "issuer": "Coinbase",
+          "chain": "base",
+          "symbol": "TSLAc",
+          "address": "0xb2000000000000000000001e800a7f5189430cD0",
+          "decimals": 8,
+          "multiplierModel": "b20-uiMultiplier",
+          "chainlinkFeed": "0xFaf869185383a24F8cb00e27BdA6b63B9905DCb4",
+          "pool": {
+            "address": "0x469337fDcc5E8f38e2E4B670B04F57865D13a7BB",
+            "dex": "aerodrome-slipstream-3",
+            "name": "TSLAc / USDC 0.034%",
+            "token0": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "token1": "0xb2000000000000000000001e800a7f5189430cD0",
+            "liquidityUsdAtBuild": 942647
+          }
+        }
+      ]
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "MSFTx",
+          "address": "XspzcW1PRtgf6Wj92HCiZdjzKCyFekVD8P5Ueh3dRMX",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "MSFTon",
+          "address": "FRmH6iRkMr33DLG6zVLR7EM4LojBFAuq6NtFzG6ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "MSFT",
+          "address": "0xe93237C50D904957Cf27E7B1133b510C669c2e74",
+          "decimals": 18,
+          "isin": "US5949181045",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0x45C3C877C15E6BA2EBB19eA114Ea508d14C1Af2E",
+          "pool": {
+            "address": "0xeb60bCD1D920ad6E102690CCFC6fB488899E1510",
+            "dex": "uniswap-v3-robinhood",
+            "name": "MSFT / USDG 0.3%",
+            "token0": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "token1": "0xe93237C50D904957Cf27E7B1133b510C669c2e74",
+            "liquidityUsdAtBuild": 627432
+          }
+        },
+        {
+          "issuer": "Coinbase",
+          "chain": "base",
+          "symbol": "MSFTc",
+          "address": "0xB200000000000000000000Ab99cFa739E253872B",
+          "decimals": 8,
+          "multiplierModel": "b20-uiMultiplier",
+          "chainlinkFeed": "0xeB10A6c9aa7E537aEd766C08c35Dae35B321b18c",
+          "pool": {
+            "address": "0x7103eB3c9590d1281f7dc03b2A9EE27C39dF5D54",
+            "dex": "aerodrome-slipstream-3",
+            "name": "MSFTc / USDC 0.011%",
+            "token0": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "token1": "0xB200000000000000000000Ab99cFa739E253872B",
+            "liquidityUsdAtBuild": 911047
+          }
+        }
+      ]
+    },
+    {
+      "ticker": "GOOGL",
+      "name": "Alphabet",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "GOOGLx",
+          "address": "XsCPL9dNWBMvFtTmwcCA5v3xWPSMEBCszbQdiLLq6aN",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "GOOGLon",
+          "address": "bbahNA5vT9WJeYft8tALrH1LXWffjwqVoUbqYa1ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "GOOGL",
+          "address": "0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3",
+          "decimals": 18,
+          "isin": "US02079K3059",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0xF6f373a037c30F0e5010d854385cA89185AE638b",
+          "pool": {
+            "address": "0x34D0dC122CF9A8Eb296fC5e0D3A233625D7d19b7",
+            "dex": "uniswap-v3-robinhood",
+            "name": "GOOGL / USDG 0.05%",
+            "token0": "0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3",
+            "token1": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "liquidityUsdAtBuild": 925832
+          }
+        },
+        {
+          "issuer": "Coinbase",
+          "chain": "base",
+          "symbol": "GOOGLc",
+          "address": "0xb2000000000000000000002D0BA3164cc74f58B7",
+          "decimals": 8,
+          "multiplierModel": "b20-uiMultiplier",
+          "chainlinkFeed": "0x5bF49E0ffA937CE2FfF033c739aD7C634c4D34F2",
+          "pool": {
+            "address": "0xB1987CAD1682841b4b641d50E520777eC5Ab5542",
+            "dex": "aerodrome-slipstream-3",
+            "name": "GOOGLc / USDC 0.05%",
+            "token0": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "token1": "0xb2000000000000000000002D0BA3164cc74f58B7",
+            "liquidityUsdAtBuild": 1632744
+          }
+        }
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "AMZNx",
+          "address": "Xs3eBt7uRfJX8QUs4suhyU8p2M6DoUDrJyWBa8LLZsg",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "AMZNon",
+          "address": "14Tqdo8V1FhzKsE3W2pFsZCzYPQxxupXRcqw9jv6ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "AMZN",
+          "address": "0x12f190a9F9d7D37a250758b26824B97CE941bF54",
+          "decimals": 18,
+          "isin": "US0231351067",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0xD5a1508ceD74c084eBf3cBe853e2C968fB2a651C",
+          "pool": {
+            "address": "0x8AC92DA74AB5F3b1d024Dc1943Ad7e15Dc4179Ef",
+            "dex": "uniswap-v3-robinhood",
+            "name": "AMZN / USDG 0.3%",
+            "token0": "0x12f190a9F9d7D37a250758b26824B97CE941bF54",
+            "token1": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "liquidityUsdAtBuild": 852251
+          }
+        },
+        {
+          "issuer": "Coinbase",
+          "chain": "base",
+          "symbol": "AMZNc",
+          "address": "0xb200000000000000000000d9192b6B456483C2E8",
+          "decimals": 8,
+          "multiplierModel": "b20-uiMultiplier",
+          "chainlinkFeed": "0x06A8E4b3aBB3B7543d8396FB2B763d22820cB295",
+          "pool": {
+            "address": "0xd03Bc8C7F2FAedCe2aac81bF0444AEA08Ea06E9b",
+            "dex": "aerodrome-slipstream-3",
+            "name": "AMZNc / USDC 0.02%",
+            "token0": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "token1": "0xb200000000000000000000d9192b6B456483C2E8",
+            "liquidityUsdAtBuild": 1985344
+          }
+        }
+      ]
+    },
+    {
+      "ticker": "META",
+      "name": "Meta",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "METAx",
+          "address": "Xsa62P5mvPszXL1krVUnU5ar38bBSVcWAB6fmPCo5Zu",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "METAon",
+          "address": "fDxs5y12E7x7jBwCKBXGqt71uJmCWsAQ3Srkte6ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "META",
+          "address": "0xc0D6457C16Cc70d6790Dd43521C899C87ce02f35",
+          "decimals": 18,
+          "isin": "US30303M1027",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0x7C38C00C30BEe9378381E7B6135d7283356D71b1",
+          "pool": {
+            "address": "0x107a7Cb40d8665360ba10E59471Af06150A50922",
+            "dex": "uniswap-v3-robinhood",
+            "name": "META / USDG 0.3%",
+            "token0": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "token1": "0xc0D6457C16Cc70d6790Dd43521C899C87ce02f35",
+            "liquidityUsdAtBuild": 334594
+          }
+        },
+        {
+          "issuer": "Coinbase",
+          "chain": "base",
+          "symbol": "METAc",
+          "address": "0xb2000000000000000000008bC8786B856E61707C",
+          "decimals": 8,
+          "multiplierModel": "b20-uiMultiplier",
+          "chainlinkFeed": "0x6526aE6797A76123638b863AeE4dD27Ba4E4b27D",
+          "pool": {
+            "address": "0xEAF57753BC382E0324a1D43F72E7027705a2273E",
+            "dex": "aerodrome-slipstream-3",
+            "name": "METAc / USDC 0.023%",
+            "token0": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "token1": "0xb2000000000000000000008bC8786B856E61707C",
+            "liquidityUsdAtBuild": 2055023
+          }
+        }
+      ]
+    },
+    {
+      "ticker": "MSTR",
+      "name": "MicroStrategy",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "MSTRx",
+          "address": "XsP7xzNPvEHS1m6qfanPUGjNmdnmsLKEoNAnHjdxxyZ",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "MSTRon",
+          "address": "FSz4ouiqXpHuGPcpacZfTzbMjScoj5FfzHkiyu2ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "MSTR",
+          "address": "0xec262a75e413fAfD0dF80480274532C79D42da09",
+          "decimals": 18,
+          "isin": "US5949724083",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0x396118bdFB181e6240E74D243F266B061c0edc3D",
+          "pool": {
+            "address": "0x17578C0e0D15da44f31677263114F71aE76653EA",
+            "dex": "uniswap-v3-robinhood",
+            "name": "MSTR / USDG 1%",
+            "token0": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "token1": "0xec262a75e413fAfD0dF80480274532C79D42da09",
+            "liquidityUsdAtBuild": 553226
+          }
+        },
+        {
+          "issuer": "Coinbase",
+          "chain": "base",
+          "symbol": "MSTRc",
+          "address": "0xb2000000000000000000004884b426556b92883d",
+          "decimals": 8,
+          "multiplierModel": "b20-uiMultiplier",
+          "chainlinkFeed": "0xB3cE282CD188b35DA0E38D8Bc7d58e33173D202a",
+          "pool": {
+            "address": "0x8b27f626ab668197000BC722A1012022CAeD10E2",
+            "dex": "aerodrome-slipstream-3",
+            "name": "MSTRc / USDC 0.05%",
+            "token0": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "token1": "0xb2000000000000000000004884b426556b92883d",
+            "liquidityUsdAtBuild": 1513224
+          }
+        }
+      ]
+    },
+    {
+      "ticker": "COIN",
+      "name": "Coinbase",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "COINx",
+          "address": "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "COINon",
+          "address": "5u6KDiNJXxX4rGMfYT4BApZQC5CuDNrG6MHkwp1ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "COIN",
+          "address": "0x6330D8C3178a418788dF01a47479c0ce7CCF450b",
+          "decimals": 18,
+          "isin": "US19260Q1076",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0xA3a468A452940B7D6b69991207B508c609a98Ef2",
+          "pool": null
+        }
+      ]
+    },
+    {
+      "ticker": "CRCL",
+      "name": "Circle",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "CRCLx",
+          "address": "XsueG8BtpquVJX9LVLLEGuViXUungE6WmK5YZ3p3bd1",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "CRCLon",
+          "address": "6xHEyem9hmkGtVq6XGCiQUGpPsHBaoYuYdFNZa5ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "CRCL",
+          "address": "0xdF0992E440dD0be65BD8439b609d6D4366bf1CB5",
+          "decimals": 18,
+          "isin": "US1725731079",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0x6652eDf64bA3731C4F2D3ce821A0Fb1f1f6b482a",
+          "pool": {
+            "address": "0x654E4143e82a5824445Ade0824351C2A9ACD95a8",
+            "dex": "uniswap-v3-robinhood",
+            "name": "CRCL / USDG 0.3%",
+            "token0": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "token1": "0xdF0992E440dD0be65BD8439b609d6D4366bf1CB5",
+            "liquidityUsdAtBuild": 1814573
+          }
+        }
+      ]
+    },
+    {
+      "ticker": "SPY",
+      "name": "SP500",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "SPYx",
+          "address": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "SPYon",
+          "address": "k18WJUULWheRkSpSquYGdNNmtuE2Vbw1hpuUi92ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "SPY",
+          "address": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+          "decimals": 18,
+          "isin": "US78462F1030",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0x319724394D3A0e3669269846abE664Cd621f9f6A",
+          "pool": {
+            "address": "0x38453c115607463Ac284820Ce959831042f3Df4E",
+            "dex": "ramses-v3-robinhood",
+            "name": "SPY / USDG 0.01%",
+            "token0": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+            "token1": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "liquidityUsdAtBuild": 472983
+          }
+        },
+        {
+          "issuer": "Coinbase",
+          "chain": "base",
+          "symbol": "SPYc",
+          "address": "0xb2000000000000000000003969149a9DaB168501",
+          "decimals": 18,
+          "multiplierModel": "b20-uiMultiplier",
+          "chainlinkFeed": null,
+          "pool": null
+        }
+      ]
+    },
+    {
+      "ticker": "QQQ",
+      "name": "Nasdaq",
+      "venues": [
+        {
+          "issuer": "xStocks",
+          "chain": "solana",
+          "symbol": "QQQx",
+          "address": "Xs8S1uUs1zvS2p7iwtsG3b6fkhpvmwz4GYU3gWAmWHZ",
+          "decimals": 8,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Ondo",
+          "chain": "solana",
+          "symbol": "QQQon",
+          "address": "HrYNm6jTQ71LoFphjVKBTdAE4uja7WsmLG8VxB8ondo",
+          "decimals": 9,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "multiplierModel": "token2022-scaledUiAmount"
+        },
+        {
+          "issuer": "Robinhood",
+          "chain": "robinhood",
+          "symbol": "QQQ",
+          "address": "0xD5f3879160bc7c32ebb4dC785F8a4F505888de68",
+          "decimals": 18,
+          "isin": "US46090E1038",
+          "multiplierModel": "erc8056-uiMultiplier",
+          "chainlinkFeed": "0x80901d846d5D7B030F26B480776EE3b29374C2ae",
+          "pool": {
+            "address": "0xD60A5d14dB690B7Afad71F76B108071D7175597d",
+            "dex": "uniswap-v3-robinhood",
+            "name": "QQQ / USDG 0.05%",
+            "token0": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+            "token1": "0xD5f3879160bc7c32ebb4dC785F8a4F505888de68",
+            "liquidityUsdAtBuild": 1309687
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+# Fairtape
+
+**The consolidated tape for onchain stocks.** One NVIDIA, four issuers, three chains, one fair price.
+
+NVIDIA now trades onchain as **NVDAx** (xStocks) and **NVDAon** (Ondo) on Solana, **NVDA** on Robinhood Chain and **NVDAc**
+(Coinbase) on Base. Each venue has its own price, its own liquidity and its own dividend multiplier, so no single screen tells you
+what one real share costs. Fairtape does three things:
+
+1. **Tape.** It shows every issuer of the same stock on one screen, priced **per underlying share**, with the premium or discount to
+   the reference share price.
+2. **Best print.** You start from whatever you hold on any chain. Fairtape asks for an executable route to every venue and ranks the
+   routes by how many real shares, or dollars, you receive after fees and bridges. Then you sign once.
+3. **Pay links.** A merchant requests exact USDC on Base or Solana, and the payer settles with any stock, stablecoin or gas token on
+   any of the three chains. The invoice is marked paid only after the server verifies the settlement transaction onchain.
+
+Everything runs on mainnet. Nothing is mocked, simulated or custodied.
+
+## Why per share matters
+
+Issuers reinvest dividends by changing how many shares one token represents:
+
+| Venue | Multiplier model | Read from |
+|---|---|---|
+| xStocks, Ondo (Solana) | Token-2022 `scaledUiAmountConfig` (`newMultiplier` once its effective time passes) | Jupiter price API / mint account |
+| Robinhood (Robinhood Chain) | ERC-8056 `uiMultiplier()` | token contract |
+| Coinbase (Base) | B20 `uiMultiplier()` | token contract |
+
+On 2026-10-01, SPYx's multiplier was **1.0057**. Comparing raw token prices was off by 57 bp, which is wider than the spread you're
+trying to capture. Fairtape divides every venue's token price by its live multiplier before comparing anything.
+
+## Data sources (all live, all verifiable)
+
+- **Robinhood Chain (4663):**
+  - Stock token prices come from the deepest v3-style USDG pool (Uniswap v3, Ramses), read with `slot0`.
+  - Depth comes from the pool's balances.
+  - Each venue is cross-checked against its Chainlink feed, with `oraclePaused()` honored.
+- **Base (8453):** Coinbase B20 stock prices come from the deepest Aerodrome Slipstream or Uniswap v3 USDC pool, cross-checked against the Chainlink "Coinbase X" feeds.
+- **Solana:** xStocks and Ondo prices and liquidity come from Jupiter's price API, which includes the scaled-UI multiplier.
+- **Reference:** the underlying share bid/ask from Robinhood's public market-data API (`/rhj/prices`), including trading halts.
+- **Execution:** LI.FI quotes (Jupiter, 1inch, Kyberswap, Across, Relay, CCTPv2, Mayan…). Every transaction is signed in the user's own wallet.
+- **Registry:** `scripts/build-registry.mjs` discovers every venue from issuer and oracle indexes and verifies each address onchain
+  (`symbol()`, `decimals()`, pool tokens) before it reaches the app. Unverified lookalikes are excluded. For example, a fake "NVDAx" exists on Solana.
+
+## Architecture
+
+```
+app/                     Next.js 16 App Router
+  page.tsx               the tape (live, auto-refreshing)
+  s/[ticker]             venue cards, oracle health, premium history chart
+  trade                  best-print router: buy / sell / switch issuer
+  pay, pay/new, pay/[id] pay links with onchain settlement verification
+  portfolio              holdings across 3 chains, in real shares
+  api/                   tape, routes, balances, invoices, status, confirm, history, cron
+lib/server/
+  tape.ts                multicall reads + normalization + best venue per stock
+  routes.ts, lifi.ts     route discovery and ranking
+  invoices.ts            invoice lifecycle; verifies USDC delivery from receipts / token balances
+  snapshots.ts, db.ts    minute-by-minute premium history (Postgres, or embedded PGlite locally)
+  balances.ts            wallet holdings on Solana, Base and Robinhood Chain
+components/              wallet connection (Wallet Standard + wagmi), executor, UI
+```
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+No keys are required. Optional environment variables:
+
+| Variable | Purpose |
+|---|---|
+| `DATABASE_URL` | Postgres for production (otherwise an embedded PGlite in `.data/`) |
+| `SOLANA_RPC`, `NEXT_PUBLIC_SOLANA_RPC` | Private Solana RPC (e.g. Helius) |
+| `ROBINHOOD_RPC`, `BASE_RPC` | Private EVM RPCs (public endpoints are rate-limited) |
+| `LIFI_API_KEY`, `LIFI_INTEGRATOR`, `LIFI_FEE` | Higher LI.FI limits and the integrator fee (the business model) |
+| `JUPITER_API_KEY` | Jupiter Pro price API |
+| `CRON_SECRET` | Protects `/api/cron/snapshot` |
+
+To regenerate the verified registry, run `node scripts/build-registry.mjs`.
+
+## Honest limits
+
+- Fairtape doesn't mint, redeem or wrap stock tokens. Issuers are separate legal claims, and only dollars (USDC/USDG) move between chains.
+- Tokenized stocks are not available to US persons, or in some other jurisdictions, under issuer terms. Fairtape is non-custodial software, not a broker.
+- Route quality depends on public liquidity and routers. Thin venues (most Ondo pools today) are shown but never chosen as "best".
