@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Faq } from "@/components/home/faq";
 
-export const metadata = { title: "FAQ — Fairtape" };
+export const metadata = { title: "FAQ | Fairtape" };
 
 export default function FaqPage() {
   return (

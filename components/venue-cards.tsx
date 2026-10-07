@@ -35,7 +35,7 @@ export function VenueCards({ initial, asset }: { initial: Tape; asset: Asset }) 
               <dt className="muted">Token price</dt>
               <dd className="num text-right">{usd(v.priceToken)}</dd>
               <dt className="muted">Shares / token</dt>
-              <dd className="num text-right">{v.multiplier?.toFixed(6) ?? "—"}</dd>
+              <dd className="num text-right">{v.multiplier?.toFixed(6) ?? "n/a"}</dd>
               <dt className="muted">Liquidity</dt>
               <dd className="num text-right">{compactUsd(v.liquidityUsd)}</dd>
               {v.oracle && (

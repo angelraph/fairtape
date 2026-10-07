@@ -136,7 +136,7 @@ export function TestTrade({ initialTicker = "TSLA" }: { initialTicker?: string }
           <select className="input" value={ticker} onChange={(e) => { setTicker(e.target.value); setRoutes(null); }}>
             {TEST_STOCKS.map((s) => (
               <option key={s.ticker} value={s.ticker}>
-                {s.ticker} — {s.name}
+                {s.ticker} · {s.name}
                 {balanceOf(s.address) ? ` (you hold ${fmtAmount(balanceOf(s.address), 4)})` : ""}
               </option>
             ))}
@@ -149,7 +149,7 @@ export function TestTrade({ initialTicker = "TSLA" }: { initialTicker?: string }
             {counterOptions.map((t) => (
               <option key={t.address} value={t.address}>
                 {t.symbol}
-                {balanceOf(t.address) != null ? ` — ${fmtAmount(balanceOf(t.address), 6)}` : ""}
+                {balanceOf(t.address) != null ? `: ${fmtAmount(balanceOf(t.address), 6)}` : ""}
               </option>
             ))}
           </select>
@@ -189,8 +189,8 @@ export function TestTrade({ initialTicker = "TSLA" }: { initialTicker?: string }
             <div className="text-text font-medium mb-1">
               {side === "buy" ? `Which path gets you the most ${ticker}?` : `Which path pays the most for your ${ticker}?`}
             </div>
-            Fairtape quotes every Synthra pool on Robinhood Chain Testnet — each fee tier directly, and two-hop paths through USDC, WETH and
-            TSLA — onchain, in one call, then ranks them by what you actually receive.
+            Fairtape quotes every Synthra pool on Robinhood Chain Testnet: each fee tier directly, and two-hop paths through USDC, WETH and
+            TSLA, onchain, in one call, then ranks them by what you actually receive.
           </div>
         )}
         {loading && [0, 1, 2].map((i) => <div key={i} className="skeleton h-[76px]" />)}

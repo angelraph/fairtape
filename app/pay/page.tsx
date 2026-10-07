@@ -3,7 +3,7 @@ import { MyInvoices } from "@/components/my-invoices";
 import { PhoneDemo } from "@/components/home/phone-demo";
 import { Reveal } from "@/components/motion";
 
-export const metadata = { title: "Pay links — Fairtape" };
+export const metadata = { title: "Pay links | Fairtape" };
 
 const STEPS: [string, string][] = [
   ["Create a link", "Name, amount, and the Base or Solana address that should receive USDC."],

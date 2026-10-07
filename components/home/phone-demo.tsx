@@ -72,7 +72,7 @@ export function PhoneDemo() {
           <div className="small muted">Review</div>
           <div className="rounded-2xl border border-line p-4 mt-3">
             <div className="small faint">You sell</div>
-            <div className="num text-xl mt-0.5">{tokens ? fmtAmount(tokens, 4) : "—"} {best?.symbol}</div>
+            <div className="num text-xl mt-0.5">{tokens ? fmtAmount(tokens, 4) : "n/a"} {best?.symbol}</div>
             <div className="my-3 h-px bg-line" />
             <div className="small faint">Maya receives exactly</div>
             <div className="num text-xl mt-0.5 pos">{INVOICE}.00 USDC</div>

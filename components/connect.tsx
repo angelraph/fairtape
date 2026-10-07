@@ -66,7 +66,7 @@ export function ConnectDialog({ onClose }: { onClose: () => void }) {
         <section className="mb-5">
           <div className="flex items-center justify-between mb-2">
             <span className="label flex items-center gap-2 !mb-0">
-              <span className="chain-dot chain-solana" /> Solana — xStocks, Ondo
+              <span className="chain-dot chain-solana" /> Solana: xStocks, Ondo
             </span>
             {sol.wallet && <SolanaDisconnect wallet={sol.wallet} />}
           </div>
@@ -96,7 +96,7 @@ export function ConnectDialog({ onClose }: { onClose: () => void }) {
           <div className="flex items-center justify-between mb-2">
             <span className="label flex items-center gap-2 !mb-0">
               <span className="chain-dot chain-base" />
-              <span className="chain-dot chain-robinhood" /> Base + Robinhood Chain — Coinbase, Robinhood
+              <span className="chain-dot chain-robinhood" /> Base + Robinhood Chain: Coinbase, Robinhood
             </span>
             {evm.address && <button className="link-button" onClick={() => disconnect()}>Disconnect</button>}
           </div>

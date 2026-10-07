@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Roadmap } from "@/components/home/roadmap";
 
-export const metadata = { title: "Roadmap — Fairtape" };
+export const metadata = { title: "Roadmap | Fairtape" };
 
 export default function RoadmapPage() {
   return (

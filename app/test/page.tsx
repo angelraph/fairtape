@@ -2,7 +2,7 @@ import Link from "next/link";
 import { TestWallet } from "@/components/testnet/test-wallet";
 import { TestTape } from "@/components/testnet/test-tape";
 
-export const metadata = { title: "Testnet — Fairtape" };
+export const metadata = { title: "Testnet | Fairtape" };
 
 export default function TestnetHome() {
   return (

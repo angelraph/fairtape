@@ -1,7 +1,7 @@
 import "server-only";
 
 // One tiny query interface over two backends:
-//  - Postgres (Neon/Supabase/any) when DATABASE_URL is set — used in production.
+//  - Postgres (Neon/Supabase/any) when DATABASE_URL is set, used in production.
 //  - PGlite (embedded Postgres, persisted to .data/) for local development, zero setup.
 type Row = Record<string, unknown>;
 type Db = { query<T extends Row = Row>(text: string, params?: unknown[]): Promise<{ rows: T[] }> };

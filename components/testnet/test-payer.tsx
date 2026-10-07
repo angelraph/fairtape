@@ -157,7 +157,7 @@ export function TestPayer({ inv, onReported }: { inv: Invoice; onReported: () =>
           <select className="input" value={choice ? `${choice.chain}:${choice.token}` : ""} onChange={(e) => setSelected(e.target.value)}>
             {options.map((h) => (
               <option key={`${h.chain}:${h.token}`} value={`${h.chain}:${h.token}`}>
-                test {h.symbol} on {TEST_CHAIN_LABEL[h.chain]} — {fmtAmount(h.amount, 6)}
+                test {h.symbol} on {TEST_CHAIN_LABEL[h.chain]}: {fmtAmount(h.amount, 6)}
               </option>
             ))}
           </select>

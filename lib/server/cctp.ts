@@ -14,7 +14,7 @@ export const CCTP = {
   baseSepoliaTokenMessengerV2: "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA" as Address,
 };
 
-// Fast Transfer (attested after soft finality, seconds) — Standard waits for L1 finality, far too slow for checkout.
+// Fast Transfer (attested after soft finality, seconds), Standard waits for L1 finality, far too slow for checkout.
 const FAST_FINALITY = 1000;
 
 const messengerAbi = parseAbi([

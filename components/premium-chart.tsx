@@ -82,7 +82,7 @@ export function PremiumChart({ ticker }: { ticker: string }) {
         ))}
       </div>
       {isLoading && <div className="skeleton h-[260px]" />}
-      {!isLoading && !model && <div className="h-[200px] grid place-items-center small muted">History is still building — check back in a few minutes.</div>}
+      {!isLoading && !model && <div className="h-[200px] grid place-items-center small muted">History is still building. Check back in a few minutes.</div>}
       {model && (
         <div className="relative">
           <svg

@@ -80,7 +80,7 @@ export function TapeTable({ initial }: { initial: Tape }) {
               {ISSUERS.map((i) => (
                 <VenueCell key={i.issuer} row={row} v={row.venues.find((v) => v.issuer === i.issuer)} />
               ))}
-              <td className="num">{row.spreadBps != null ? `${row.spreadBps.toFixed(1)} bp` : "—"}</td>
+              <td className="num">{row.spreadBps != null ? `${row.spreadBps.toFixed(1)} bp` : "n/a"}</td>
               <td>
                 <Link href={`/s/${row.ticker}`} className="btn !h-8 !px-3 text-[13px]">
                   Open

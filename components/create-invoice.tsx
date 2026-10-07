@@ -80,7 +80,7 @@ export function CreateInvoice({ initialNetwork = "mainnet" }: { initialNetwork?:
       </div>
       <div>
         <label className="label">What it&apos;s for (optional)</label>
-        <input className="input" value={memo} onChange={(e) => setMemo(e.target.value)} placeholder="Logo design — invoice #014" />
+        <input className="input" value={memo} onChange={(e) => setMemo(e.target.value)} placeholder="Logo design, invoice #014" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>

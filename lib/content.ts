@@ -23,7 +23,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "What does it cost?",
-    a: "Fairtape charges no fee during the beta. You pay network gas and any router or bridge fees, all shown before you sign. The planned model is a small integrator fee (10–30 bps) on routed conversions, plus a paid data feed.",
+    a: "Fairtape charges no fee during the beta. You pay network gas and any router or bridge fees, all shown before you sign. The planned model is a small integrator fee (10 to 30 bps) on routed conversions, plus a paid data feed.",
   },
   {
     q: "Can I try it without spending money?",
@@ -54,7 +54,7 @@ export const ROADMAP: RoadmapPhase[] = [
     ],
   },
   {
-    when: "Nov – Dec 2026",
+    when: "Nov to Dec 2026",
     title: "Mainnet beta with real merchants",
     status: "next",
     items: [
@@ -83,7 +83,7 @@ export const ROADMAP: RoadmapPhase[] = [
       "Paid historical premium and dislocation feed for market makers and researchers",
       "Order splitting across venues for larger tickets",
       "Installable mobile web app",
-      "Integrator fee switched on (10–30 bps), with every fee shown before signing",
+      "Integrator fee switched on (10 to 30 bps), with every fee shown before signing",
     ],
   },
 ];

@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: PageProps<"/s/[ticker]">) {
   const { ticker } = await params;
   const a = getAsset(ticker);
-  return { title: a ? `${a.ticker} across every chain — Fairtape` : "Fairtape" };
+  return { title: a ? `${a.ticker} across every chain | Fairtape` : "Fairtape" };
 }
 
 export default async function StockPage({ params }: PageProps<"/s/[ticker]">) {
@@ -54,8 +54,8 @@ export default async function StockPage({ params }: PageProps<"/s/[ticker]">) {
       <div className="panel p-5 small muted grid gap-2">
         <div className="text-text font-medium">How Fairtape prices {asset.ticker}</div>
         <p>
-          Each venue&apos;s token price is divided by that issuer&apos;s live share multiplier — Token-2022 scaled-UI amount for xStocks and Ondo,
-          ERC-8056 <span className="num">uiMultiplier()</span> for Robinhood, B20 <span className="num">uiMultiplier()</span> for Coinbase — so
+          Each venue&apos;s token price is divided by that issuer&apos;s live share multiplier: Token-2022 scaled-UI amount for xStocks and Ondo,
+          ERC-8056 <span className="num">uiMultiplier()</span> for Robinhood, B20 <span className="num">uiMultiplier()</span> for Coinbase, so
           every number on this page is the price of one real share. Robinhood Chain and Base prices are read from the deepest onchain pool;
           Solana prices come from Jupiter. The reference is the underlying share price from Robinhood market data, and each EVM venue is
           cross-checked against its Chainlink feed.

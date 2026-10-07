@@ -5,7 +5,7 @@ import { Roadmap } from "@/components/home/roadmap";
 import { assets, CHAIN_LABEL } from "@/lib/registry";
 import { TEST_STOCKS, SYNTHRA, RH_TEST_USDC, TEST_STABLES, FAUCETS } from "@/lib/testnet";
 
-export const metadata = { title: "Docs — Fairtape" };
+export const metadata = { title: "Docs | Fairtape" };
 
 const SECTIONS = [
   ["overview", "Overview"],
@@ -163,9 +163,9 @@ export default function Docs() {
                     <td className="num small break-all">{v.address}</td>
                   </tr>
                 ))}
-                <tr><td>Synthra router</td><td>—</td><td>Robinhood Testnet</td><td className="num small">{SYNTHRA.router}</td></tr>
-                <tr><td>Synthra QuoterV2</td><td>—</td><td>Robinhood Testnet</td><td className="num small">{SYNTHRA.quoter}</td></tr>
-                <tr><td>Test USDC</td><td>—</td><td>Robinhood Testnet</td><td className="num small">{RH_TEST_USDC.address}</td></tr>
+                <tr><td>Synthra router</td><td>n/a</td><td>Robinhood Testnet</td><td className="num small">{SYNTHRA.router}</td></tr>
+                <tr><td>Synthra QuoterV2</td><td>n/a</td><td>Robinhood Testnet</td><td className="num small">{SYNTHRA.quoter}</td></tr>
+                <tr><td>Test USDC</td><td>n/a</td><td>Robinhood Testnet</td><td className="num small">{RH_TEST_USDC.address}</td></tr>
                 <tr><td>USDC</td><td>Circle</td><td>Base Sepolia</td><td className="num small">{TEST_STABLES.base.address}</td></tr>
               </tbody>
             </table>
@@ -200,7 +200,7 @@ export default function Docs() {
 
         <Section id="business" eyebrow="Why it lasts" title="Business model">
           <ul>
-            <li><strong>Routing fee:</strong> 10–30 bps integrator fee on routed conversions (LI.FI integrator fees), off during the beta.</li>
+            <li><strong>Routing fee:</strong> 10 to 30 bps integrator fee on routed conversions (LI.FI integrator fees), off during the beta.</li>
             <li><strong>Merchant API:</strong> pay links, webhooks and payouts for platforms that pay people in USDC.</li>
             <li><strong>Data:</strong> the minute-by-minute cross-issuer premium history, a dataset nobody else is collecting yet.</li>
           </ul>

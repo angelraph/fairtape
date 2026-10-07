@@ -22,5 +22,5 @@ export function Wordmark({ height = 22 }: { height?: number }) {
 }
 
 export function FullLogo({ width = 420 }: { width?: number }) {
-  return <img src="/brand/fairtape-logo.png" alt="Fairtape — Pay anyone. In public markets." width={width} height={Math.round((width * 304) / 960)} draggable={false} />;
+  return <img src="/brand/fairtape-logo.png" alt="Fairtape | Pay anyone. In public markets." width={width} height={Math.round((width * 304) / 960)} draggable={false} />;
 }

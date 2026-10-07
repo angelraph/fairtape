@@ -32,7 +32,7 @@ function holdingSource(h: Holding): Source {
     symbol: h.symbol,
     decimals: h.decimals,
     balance: h.amount,
-    label: `${h.symbol}${h.issuer ? ` · ${h.issuer}` : ""} on ${CHAIN_LABEL[h.chain]} — ${fmtAmount(h.amount, 6)}`,
+    label: `${h.symbol}${h.issuer ? ` · ${h.issuer}` : ""} on ${CHAIN_LABEL[h.chain]}: ${fmtAmount(h.amount, 6)}`,
   };
 }
 
@@ -155,7 +155,7 @@ export function TradeDesk({ assets, initialTicker, initialSide }: { assets: Asse
           <label className="label">Stock</label>
           <select className="input" value={ticker} onChange={(e) => { setTicker(e.target.value); setRoutes(null); }}>
             {assets.map((a) => (
-              <option key={a.ticker} value={a.ticker}>{a.ticker} — {a.name}</option>
+              <option key={a.ticker} value={a.ticker}>{a.ticker} · {a.name}</option>
             ))}
           </select>
         </div>
@@ -191,7 +191,7 @@ export function TradeDesk({ assets, initialTicker, initialSide }: { assets: Asse
         {error && <p className="small neg">{error}</p>}
         {!connected && (
           <div className="small muted flex items-center justify-between gap-2">
-            <span>Preview mode — real quotes, nothing to sign.</span>
+            <span>Preview mode: real quotes, nothing to sign.</span>
             <WalletBar />
           </div>
         )}
@@ -205,7 +205,7 @@ export function TradeDesk({ assets, initialTicker, initialSide }: { assets: Asse
               {side === "sell" && `Where does your ${ticker} fetch the most dollars?`}
               {side === "move" && `Move your ${ticker} to another issuer or chain`}
             </div>
-            Fairtape asks LI.FI for an executable route to every venue, then ranks them by value delivered — per underlying share,
+            Fairtape asks LI.FI for an executable route to every venue, then ranks them by value delivered per underlying share,
             after fees, bridges and each issuer&apos;s multiplier.
           </div>
         )}
@@ -236,7 +236,7 @@ export function TradeDesk({ assets, initialTicker, initialSide }: { assets: Asse
                       {r.shares != null ? `${fmtAmount(r.shares, 6)} sh` : `${fmtAmount(Number(r.toAmount) / 10 ** (r.toDecimals ?? 6), 4)} ${r.toSymbol}`}
                     </div>
                     <div className="small muted num">
-                      ≈ {usd(r.usdOut)} · cost {r.costBps != null ? `${r.costBps.toFixed(1)} bp` : "—"}
+                      ≈ {usd(r.usdOut)} · cost {r.costBps != null ? `${r.costBps.toFixed(1)} bp` : "n/a"}
                     </div>
                   </div>
                 )}

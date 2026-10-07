@@ -128,9 +128,9 @@ export function PayInvoice({ initial, justCreated }: { initial: Invoice; justCre
 }
 
 function StatusBadge({ inv }: { inv: Invoice }) {
-  if (inv.status === "paid") return <span className="chip !border-pos/40 pos !h-7 !px-3 !text-sm">✓ Paid — verified onchain</span>;
+  if (inv.status === "paid") return <span className="chip !border-pos/40 pos !h-7 !px-3 !text-sm">✓ Paid, verified onchain</span>;
   if (inv.status === "pending")
-    return <span className="chip !border-warn/40 warn !h-7 !px-3 !text-sm">Payment in flight — verifying on {chainLabel(inv, inv.settle_chain)}…</span>;
+    return <span className="chip !border-warn/40 warn !h-7 !px-3 !text-sm">Payment in flight, verifying on {chainLabel(inv, inv.settle_chain)}…</span>;
   return <span className="chip !h-7 !px-3 !text-sm">Awaiting payment</span>;
 }
 
@@ -237,7 +237,7 @@ function Payer({ inv, onReported }: { inv: Invoice; onReported: () => void }) {
             {options.map((h) => (
               <option key={`${h.chain}:${h.token}`} value={`${h.chain}:${h.token}`}>
                 {h.symbol}
-                {h.issuer ? ` · ${h.issuer}` : ""} on {CHAIN_LABEL[h.chain]} — {fmtAmount(h.amount, 6)}
+                {h.issuer ? ` · ${h.issuer}` : ""} on {CHAIN_LABEL[h.chain]}: {fmtAmount(h.amount, 6)}
                 {h.usd != null ? ` (${usd(h.usd)})` : ""}
               </option>
             ))}

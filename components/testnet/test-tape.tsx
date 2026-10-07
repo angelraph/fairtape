@@ -62,7 +62,7 @@ export function TestTape() {
                     ))}
                   </div>
                 </td>
-                <td className="num">{r.spreadBps == null ? "—" : `${fmtAmount(r.spreadBps, 0)} bp`}</td>
+                <td className="num">{r.spreadBps == null ? "n/a" : `${fmtAmount(r.spreadBps, 0)} bp`}</td>
                 <td>
                   <Link href={`/test/trade?t=${r.ticker}`} className="btn">Trade</Link>
                 </td>

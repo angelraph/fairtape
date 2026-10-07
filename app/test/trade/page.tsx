@@ -1,7 +1,7 @@
 import { TestTrade } from "@/components/testnet/test-trade";
 import { TEST_STOCKS } from "@/lib/testnet";
 
-export const metadata = { title: "Testnet best print — Fairtape" };
+export const metadata = { title: "Testnet best print | Fairtape" };
 
 export default async function TestTradePage({ searchParams }: PageProps<"/test/trade">) {
   const sp = await searchParams;

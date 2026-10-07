@@ -6,7 +6,7 @@ import { assets } from "@/lib/registry";
 import { usd, compactUsd } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Live tape — Fairtape" };
+export const metadata = { title: "Live tape | Fairtape" };
 
 export default async function TapePage() {
   const tape = await getTape();
@@ -39,7 +39,7 @@ export default async function TapePage() {
             <Stat label="Liquidity tracked" value={compactUsd(liquidity)} sub="across every venue, live" delay={80} />
             <Stat
               label="Widest spread now"
-              value={widest ? `${widest.spreadBps!.toFixed(0)} bp` : "—"}
+              value={widest ? `${widest.spreadBps!.toFixed(0)} bp` : "n/a"}
               sub={widest ? `${widest.ticker}, same share across issuers` : ""}
               delay={160}
               accent

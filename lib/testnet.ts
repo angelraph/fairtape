@@ -45,7 +45,7 @@ export const TEST_STOCKS = [
 
 export type TestStock = (typeof TEST_STOCKS)[number];
 
-// Synthra V3 (Uniswap v3 fork) — the DEX with liquidity for the test stocks on Robinhood Chain Testnet.
+// Synthra V3 (Uniswap v3 fork), the DEX with liquidity for the test stocks on Robinhood Chain Testnet.
 export const SYNTHRA = {
   factory: "0x911b4000D3422F482F4062a913885f7b035382Df",
   router: "0x3Ce954107b1A675826B33bF23060Dd655e3758fE", // SwapRouter02 interface

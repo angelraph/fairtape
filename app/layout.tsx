@@ -14,7 +14,7 @@ const SITE = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
-  title: "Fairtape — Pay anyone. In public markets.",
+  title: "Fairtape | Pay anyone. In public markets.",
   description:
     "The consolidated tape and checkout for tokenized stocks. One share, four issuers, three chains: Fairtape prices every one per real share, routes you to the best print, and lets anyone settle a USDC invoice with stocks.",
 };

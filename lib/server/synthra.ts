@@ -215,7 +215,7 @@ export type TestTapeRow = {
 
 /**
  * The testnet tape: every stock/USDC pool at every fee tier, priced from slot0. Same token, different pools, different
- * prices — the fragmentation Fairtape routes around, reproducible with faucet tokens.
+ * prices, the fragmentation Fairtape routes around, reproducible with faucet tokens.
  */
 export async function testnetTape(): Promise<TestTapeRow[]> {
   const usdc = RH_TEST_USDC.address as Address;

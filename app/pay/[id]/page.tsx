@@ -7,9 +7,9 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: PageProps<"/pay/[id]">) {
   const { id } = await params;
   const inv = await refreshInvoice(id);
-  if (!inv) return { title: "Pay — Fairtape" };
+  if (!inv) return { title: "Pay | Fairtape" };
   const amount = inv.network === "testnet" ? `${inv.amount_usd} test USDC` : `$${inv.amount_usd}`;
-  return { title: `Pay ${inv.merchant_name} ${amount} — Fairtape` };
+  return { title: `Pay ${inv.merchant_name} ${amount} | Fairtape` };
 }
 
 export default async function PayPage({ params, searchParams }: PageProps<"/pay/[id]">) {

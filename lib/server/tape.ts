@@ -16,7 +16,7 @@ export type VenueQuote = {
   priceSource: string; // where the venue price came from
   priceToken: number | null; // USD per 1 token (raw unit, what a DEX quotes)
   multiplier: number | null; // underlying shares represented by 1 token
-  pricePerShare: number | null; // priceToken / multiplier — the only comparable number
+  pricePerShare: number | null; // priceToken / multiplier, the only comparable number
   liquidityUsd: number | null;
   premiumBps: number | null; // vs reference underlying price
   oracle: {
@@ -266,7 +266,7 @@ function buildRow(
       symbol: v.symbol,
       address: v.address,
       decimals: v.decimals,
-      priceSource: v.pool ? `${v.pool.name} (${v.pool.dex})` : "—",
+      priceSource: v.pool ? `${v.pool.name} (${v.pool.dex})` : "n/a",
       priceToken: r?.priceToken ?? null,
       multiplier,
       pricePerShare,

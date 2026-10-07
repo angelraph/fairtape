@@ -1,7 +1,7 @@
 import { CreateInvoice } from "@/components/create-invoice";
 import { HeroSwap } from "@/components/home/hero-swap";
 
-export const metadata = { title: "New pay link — Fairtape" };
+export const metadata = { title: "New pay link | Fairtape" };
 
 export default async function NewPayLink({ searchParams }: PageProps<"/pay/new">) {
   const sp = await searchParams;
