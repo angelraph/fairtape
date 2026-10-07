@@ -20,9 +20,17 @@ import {
 import { STABLES } from "@/lib/registry";
 import { solanaRpc } from "./clients";
 
+type Rpc = <T>(method: string, params: unknown[]) => Promise<T>;
+
 // Unsigned USDC transfer (creates the recipient's token account if needed). The payer's wallet signs it.
-export async function buildUsdcTransfer(from: string, to: string, rawAmount: bigint) {
-  const mint = address(STABLES.solana.address);
+// Defaults to mainnet USDC; testnet passes Solana Devnet's USDC mint and RPC.
+export async function buildUsdcTransfer(
+  from: string,
+  to: string,
+  rawAmount: bigint,
+  opts: { mint: string; decimals: number; rpc: Rpc } = { mint: STABLES.solana.address, decimals: STABLES.solana.decimals, rpc: solanaRpc },
+) {
+  const mint = address(opts.mint);
   const owner = address(from);
   const recipient = address(to);
   const payer = createNoopSigner(owner);
@@ -37,9 +45,9 @@ export async function buildUsdcTransfer(from: string, to: string, rawAmount: big
     destination,
     authority: payer,
     amount: rawAmount,
-    decimals: STABLES.solana.decimals,
+    decimals: opts.decimals,
   });
-  const { value } = await solanaRpc<{ value: { blockhash: string; lastValidBlockHeight: number } }>("getLatestBlockhash", [
+  const { value } = await opts.rpc<{ value: { blockhash: string; lastValidBlockHeight: number } }>("getLatestBlockhash", [
     { commitment: "confirmed" },
   ]);
   const message = pipe(

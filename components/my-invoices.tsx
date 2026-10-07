@@ -6,7 +6,8 @@ import { useAccount } from "wagmi";
 import { useSolanaWallet } from "./solana-wallet";
 import type { Invoice } from "@/lib/server/invoices";
 import { CHAIN_LABEL } from "@/lib/registry";
-import { usd } from "@/lib/format";
+import { usd, amount as fmtAmount } from "@/lib/format";
+import { TEST_CHAIN_LABEL } from "@/lib/testnet";
 
 export function MyInvoices() {
   const evm = useAccount();
@@ -43,8 +44,8 @@ export function MyInvoices() {
               <td>
                 <Link href={`/pay/${inv.id}`} className="font-medium hover:underline">{inv.memo || inv.merchant_name}</Link>
               </td>
-              <td className="num">{usd(inv.amount_usd)}</td>
-              <td>{CHAIN_LABEL[inv.settle_chain]}</td>
+              <td className="num">{inv.network === "testnet" ? `${fmtAmount(inv.amount_usd, 2)} test` : usd(inv.amount_usd)}</td>
+              <td>{inv.network === "testnet" ? TEST_CHAIN_LABEL[inv.settle_chain] : CHAIN_LABEL[inv.settle_chain]}</td>
               <td className={inv.status === "paid" ? "pos" : inv.status === "pending" ? "warn" : "muted"}>{inv.status}</td>
               <td className="small muted" suppressHydrationWarning>{new Date(inv.created_at).toLocaleDateString()}</td>
             </tr>

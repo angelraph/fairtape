@@ -2,7 +2,8 @@ import { CreateInvoice } from "@/components/create-invoice";
 
 export const metadata = { title: "New pay link — Fairtape" };
 
-export default function NewPayLink() {
+export default async function NewPayLink({ searchParams }: PageProps<"/pay/new">) {
+  const sp = await searchParams;
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 grid md:grid-cols-[1fr_420px] gap-10 items-start">
       <div>
@@ -17,7 +18,7 @@ export default function NewPayLink() {
           <li className="flex gap-3"><span className="pos">●</span><span>No account, no custody, no chargebacks.</span></li>
         </ul>
       </div>
-      <CreateInvoice />
+      <CreateInvoice initialNetwork={sp.net === "test" ? "testnet" : "mainnet"} />
     </div>
   );
 }

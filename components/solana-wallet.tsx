@@ -18,10 +18,12 @@ type Ctx = {
   select: (wallet: UiWallet, account: UiWalletAccount) => void;
   clear: () => void;
   send: SolanaSender | null;
+  // Same wallet, Solana Devnet (testnet mode). Phantom: Settings → Developer Settings → Testnet Mode.
+  sendDevnet: SolanaSender | null;
 };
 
-function SenderBridge({ account, onReady }: { account: UiWalletAccount; onReady: (s: SolanaSender) => void }) {
-  const signAndSend = useSignAndSendTransaction(account, "solana:mainnet");
+function SenderBridge({ account, chain, onReady }: { account: UiWalletAccount; chain: `solana:${string}`; onReady: (s: SolanaSender) => void }) {
+  const signAndSend = useSignAndSendTransaction(account, chain);
   useEffect(() => {
     onReady(async (transaction) => {
       const { signature } = await signAndSend({ transaction });
@@ -84,9 +86,16 @@ export function SolanaWalletProvider({ children }: { children: ReactNode }) {
   const onReady = useCallback((s: SolanaSender) => setSend(() => s), []);
   const canSend = account?.chains.includes("solana:mainnet") ?? false;
 
+  const [sendDevnet, setSendDevnet] = useState<SolanaSender | null>(null);
+  const onDevnetReady = useCallback((s: SolanaSender) => setSendDevnet(() => s), []);
+  const canSendDevnet = account?.chains.includes("solana:devnet") ?? false;
+
   return (
-    <SolanaWalletContext.Provider value={{ wallets, wallet, account, select, clear, send: canSend ? send : null }}>
-      {account && canSend && <SenderBridge key={account.address} account={account} onReady={onReady} />}
+    <SolanaWalletContext.Provider
+      value={{ wallets, wallet, account, select, clear, send: canSend ? send : null, sendDevnet: canSendDevnet ? sendDevnet : null }}
+    >
+      {account && canSend && <SenderBridge key={account.address} account={account} chain="solana:mainnet" onReady={onReady} />}
+      {account && canSendDevnet && <SenderBridge key={`${account.address}:devnet`} account={account} chain="solana:devnet" onReady={onDevnetReady} />}
       {children}
     </SolanaWalletContext.Provider>
   );

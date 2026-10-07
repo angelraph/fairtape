@@ -60,6 +60,24 @@ lib/server/
 components/              wallet connection (Wallet Standard + wagmi), executor, UI
 ```
 
+## Testnet mode: every flow for $0
+
+The tape is always live mainnet data. Execution can also run on public testnets with free faucet tokens (`/test`). Every action is a real
+signed transaction with an explorer link.
+
+| Flow | Testnet | How |
+|---|---|---|
+| Best print | Robinhood Chain Testnet (46630) | Official Robinhood test stocks (TSLA, AMZN, AMD, PLTR, NFLX) on Synthra V3 (a Uniswap v3 fork). Each fee tier and each two-hop path through USDC, WETH or TSLA is quoted onchain by QuoterV2 in a single Multicall3 call, ranked, and executed through SwapRouter02. |
+| Pay with a stock | Robinhood Chain Testnet | One exact-output swap sells the payer's test stock and delivers **exactly** the invoiced test USDC straight to the merchant. |
+| Pay with USDC | Base Sepolia, Solana Devnet, Robinhood Chain Testnet | Direct transfer. The server verifies it from the receipt or token balances. |
+| Cross-chain pay | Base Sepolia → Solana Devnet | Circle CCTP V2 fast transfer with the **Forwarding Service**. The payer signs once, and Circle mints on Solana and opens the merchant's USDC account if needed. The server marks the invoice paid only after it sees the Solana mint. |
+
+Testnet prices are set by testers, so the UI labels them. What carries over to mainnet is the mechanism: one token, several pools, several prices.
+Addresses are in `lib/testnet.ts`. RESEARCH.md §6 records how each one was verified.
+
+Limits: there's no bridge out of Robinhood Chain Testnet, LI.FI doesn't serve these testnets, and xStocks and Coinbase stock tokens exist only on mainnet.
+So on testnet, stock payments settle on Robinhood Chain Testnet, and the cross-chain path covers USDC from Base Sepolia to Solana Devnet.
+
 ## Run locally
 
 ```bash

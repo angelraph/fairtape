@@ -36,6 +36,7 @@ create table if not exists invoices (
   settle_tx text,
   settled_amount numeric
 );
+alter table invoices add column if not exists network text not null default 'mainnet';
 `;
 
 declare global {
@@ -52,7 +53,9 @@ async function connect(): Promise<Db> {
   } else {
     const { PGlite } = await import("@electric-sql/pglite");
     const { mkdirSync } = await import("node:fs");
-    const dir = `${process.cwd()}/.data/pglite`;
+    // Serverless filesystems are read-only except /tmp; there the embedded DB is per-instance and only a fallback
+    // until DATABASE_URL (Neon) is set.
+    const dir = process.env.VERCEL ? "/tmp/pglite" : `${process.cwd()}/.data/pglite`;
     mkdirSync(dir, { recursive: true });
     const pg = new PGlite(dir);
     db = { query: (text, params) => pg.query(text, params) as never };

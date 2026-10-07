@@ -14,6 +14,16 @@ import { useExecute } from "./use-execute";
 import { useSolanaWallet } from "./solana-wallet";
 import { WalletBar, short } from "./connect";
 import { usd, amount as fmtAmount } from "@/lib/format";
+import { TEST_CHAIN_LABEL, TEST_EXPLORER } from "@/lib/testnet";
+import { TestPayer } from "./testnet/test-payer";
+
+// Labels and explorer links follow the invoice's network.
+function chainLabel(inv: Invoice, chain: ChainKey) {
+  return inv.network === "testnet" ? TEST_CHAIN_LABEL[chain] : CHAIN_LABEL[chain];
+}
+function txLink(inv: Invoice, chain: ChainKey, hash: string) {
+  return inv.network === "testnet" ? TEST_EXPLORER[chain].tx(hash) : EXPLORER[chain].tx(hash);
+}
 
 type PayQuote = {
   kind: "lifi" | "evm-transfer" | "solana-tx";
@@ -55,13 +65,18 @@ export function PayInvoice({ initial, justCreated }: { initial: Invoice; justCre
   return (
     <div className="grid md:grid-cols-[1fr_440px] gap-8 items-start">
       <div className="panel p-6">
-        <div className="small muted">Payment request</div>
+        <div className="small muted flex items-center gap-2">
+          Payment request
+          {inv.network === "testnet" && <span className="chip !border-warn/40 warn">TESTNET · test USDC</span>}
+        </div>
         <div className="text-2xl font-semibold mt-1">{inv.merchant_name}</div>
         {inv.memo && <div className="muted mt-1">{inv.memo}</div>}
-        <div className="num text-5xl mt-6 tracking-tight">{usd(inv.amount_usd)}</div>
+        <div className="num text-5xl mt-6 tracking-tight">
+          {inv.network === "testnet" ? `${fmtAmount(inv.amount_usd, 2)} test USDC` : usd(inv.amount_usd)}
+        </div>
         <div className="flex items-center gap-2 mt-2 small muted">
           <span className={`chain-dot chain-${inv.settle_chain}`} />
-          Settles as USDC on {CHAIN_LABEL[inv.settle_chain]} to <span className="num">{short(inv.recipient, 6)}</span>
+          Settles as USDC on {chainLabel(inv, inv.settle_chain)} to <span className="num">{short(inv.recipient, 6)}</span>
         </div>
         <div className="mt-6">
           <StatusBadge inv={inv} />
@@ -69,17 +84,17 @@ export function PayInvoice({ initial, justCreated }: { initial: Invoice; justCre
         {inv.status === "paid" && (
           <div className="mt-5 grid gap-1.5 small">
             <div className="muted">
-              Received <span className="num text-text">{usd(inv.settled_amount)}</span> USDC
-              {inv.payer_chain && <> · paid from {CHAIN_LABEL[inv.payer_chain]}</>}
+              Received <span className="num text-text">{fmtAmount(inv.settled_amount, 2)}</span> {inv.network === "testnet" ? "test " : ""}USDC
+              {inv.payer_chain && <> · paid from {chainLabel(inv, inv.payer_chain)}</>}
               {inv.payer_asset && <> with {inv.payer_asset}</>}
             </div>
             {inv.source_tx && inv.payer_chain && (
-              <a className="underline muted hover:text-text" target="_blank" rel="noreferrer" href={EXPLORER[inv.payer_chain].tx(inv.source_tx)}>
+              <a className="underline muted hover:text-text" target="_blank" rel="noreferrer" href={txLink(inv, inv.payer_chain, inv.source_tx)}>
                 Payer transaction ↗
               </a>
             )}
             {inv.settle_tx && inv.settle_tx !== inv.source_tx && (
-              <a className="underline muted hover:text-text" target="_blank" rel="noreferrer" href={EXPLORER[inv.settle_chain].tx(inv.settle_tx)}>
+              <a className="underline muted hover:text-text" target="_blank" rel="noreferrer" href={txLink(inv, inv.settle_chain, inv.settle_tx)}>
                 Settlement transaction ↗
               </a>
             )}
@@ -102,7 +117,12 @@ export function PayInvoice({ initial, justCreated }: { initial: Invoice; justCre
           </div>
         )}
       </div>
-      {inv.status !== "paid" && <Payer inv={inv} onReported={() => qc.invalidateQueries({ queryKey: ["invoice", inv.id] })} />}
+      {inv.status !== "paid" &&
+        (inv.network === "testnet" ? (
+          <TestPayer inv={inv} onReported={() => qc.invalidateQueries({ queryKey: ["invoice", inv.id] })} />
+        ) : (
+          <Payer inv={inv} onReported={() => qc.invalidateQueries({ queryKey: ["invoice", inv.id] })} />
+        ))}
     </div>
   );
 }
@@ -110,7 +130,7 @@ export function PayInvoice({ initial, justCreated }: { initial: Invoice; justCre
 function StatusBadge({ inv }: { inv: Invoice }) {
   if (inv.status === "paid") return <span className="chip !border-pos/40 pos !h-7 !px-3 !text-sm">✓ Paid — verified onchain</span>;
   if (inv.status === "pending")
-    return <span className="chip !border-warn/40 warn !h-7 !px-3 !text-sm">Payment in flight — verifying on {CHAIN_LABEL[inv.settle_chain]}…</span>;
+    return <span className="chip !border-warn/40 warn !h-7 !px-3 !text-sm">Payment in flight — verifying on {chainLabel(inv, inv.settle_chain)}…</span>;
   return <span className="chip !h-7 !px-3 !text-sm">Awaiting payment</span>;
 }
 
