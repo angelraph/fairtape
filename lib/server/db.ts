@@ -51,11 +51,11 @@ async function connect(): Promise<Db> {
     const pool = new Pool({ connectionString: url, max: 3, ssl: url.includes("localhost") ? undefined : { rejectUnauthorized: false } });
     db = { query: (text, params) => pool.query(text, params as unknown[]) as never };
   } else {
+    // The embedded database can't load its WebAssembly on Vercel's serverless runtime: production needs Postgres.
+    if (process.env.VERCEL) throw new Error("Pay links are being connected to their database. Try again shortly.");
     const { PGlite } = await import("@electric-sql/pglite");
     const { mkdirSync } = await import("node:fs");
-    // Serverless filesystems are read-only except /tmp; there the embedded DB is per-instance and only a fallback
-    // until DATABASE_URL (Neon) is set.
-    const dir = process.env.VERCEL ? "/tmp/pglite" : `${process.cwd()}/.data/pglite`;
+    const dir = `${process.cwd()}/.data/pglite`;
     mkdirSync(dir, { recursive: true });
     const pg = new PGlite(dir);
     db = { query: (text, params) => pg.query(text, params) as never };
