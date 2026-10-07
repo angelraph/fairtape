@@ -9,7 +9,7 @@ import { TEST_CHAIN_LABEL, TEST_STABLES } from "@/lib/testnet";
 import { useTestHoldings } from "../use-test-holdings";
 import { useEvmTx, friendlyError, type EvmTx } from "../use-evm-tx";
 import { useSolanaWallet } from "../solana-wallet";
-import { WalletBar } from "../connect";
+import { WalletBar, openConnect } from "../connect";
 import { TxStatus } from "./test-trade";
 import { amount as fmtAmount } from "@/lib/format";
 
@@ -184,8 +184,14 @@ export function TestPayer({ inv, onReported }: { inv: Invoice; onReported: () =>
       )}
       {error && <p className="small neg">{error}</p>}
       <TxStatus state={state} chain={payChain === "base" ? "base" : "robinhood"} />
-      <button className="btn btn-primary btn-lg" disabled={!q || paying || inv.status === "pending"} onClick={pay}>
-        {inv.status === "pending" ? "Verifying payment…" : paying ? "Paying…" : `Pay ${fmtAmount(inv.amount_usd, 2)} test USDC`}
+      <button className="btn btn-primary btn-lg" disabled={connected && (!q || paying || inv.status === "pending")} onClick={connected ? pay : openConnect}>
+        {!connected
+          ? "Connect a wallet to pay"
+          : inv.status === "pending"
+            ? "Verifying payment…"
+            : paying
+              ? "Paying…"
+              : `Pay ${fmtAmount(inv.amount_usd, 2)} test USDC`}
       </button>
     </div>
   );

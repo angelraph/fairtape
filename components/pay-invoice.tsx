@@ -12,7 +12,7 @@ import { EVM_CHAIN_ID } from "@/lib/chains";
 import { useHoldings } from "./use-holdings";
 import { useExecute } from "./use-execute";
 import { useSolanaWallet } from "./solana-wallet";
-import { WalletBar, short } from "./connect";
+import { WalletBar, short, openConnect } from "./connect";
 import { usd, amount as fmtAmount } from "@/lib/format";
 import { TEST_CHAIN_LABEL, TEST_EXPLORER } from "@/lib/testnet";
 import { TestPayer } from "./testnet/test-payer";
@@ -276,8 +276,12 @@ function Payer({ inv, onReported }: { inv: Invoice; onReported: () => void }) {
       {error && <p className="small neg">{error}</p>}
       {state.step === "error" && <p className="small neg">{state.message}</p>}
       {(state.step === "signing" || state.step === "approving") && <p className="small muted">{state.message}</p>}
-      <button className="btn btn-primary btn-lg" disabled={!q || paying || quoting || inv.status === "pending"} onClick={pay}>
-        {inv.status === "pending" ? "Verifying payment…" : paying ? "Paying…" : `Pay ${usd(inv.amount_usd)}`}
+      <button
+        className="btn btn-primary btn-lg"
+        disabled={connected && (!q || paying || quoting || inv.status === "pending")}
+        onClick={connected ? pay : openConnect}
+      >
+        {!connected ? "Connect a wallet to pay" : inv.status === "pending" ? "Verifying payment…" : paying ? "Paying…" : `Pay ${usd(inv.amount_usd)}`}
       </button>
       <p className="small faint">Tokenized stocks are not available to US persons.</p>
     </div>

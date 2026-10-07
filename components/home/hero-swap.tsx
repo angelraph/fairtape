@@ -14,7 +14,7 @@ const INVOICE_USD = 100;
  * The hero: a live "pay with stock" quote. It cycles through every real issuer of the same stock and shows how many tokens
  * settle a $100 invoice on each, priced from the live tape (token price, so each issuer's multiplier is already inside).
  */
-export function HeroSwap({ initial, ticker = "NVDA" }: { initial: Tape; ticker?: string }) {
+export function HeroSwap({ initial, ticker = "NVDA", cta = true }: { initial?: Tape; ticker?: string; cta?: boolean }) {
   const { data: tape } = useTape(initial);
   const row = tape?.rows.find((r) => r.ticker === ticker) ?? tape?.rows[0];
   const venues = useMemo(
@@ -27,7 +27,7 @@ export function HeroSwap({ initial, ticker = "NVDA" }: { initial: Tape; ticker?:
     const t = setInterval(() => setI((n) => (n + 1) % venues.length), 3400);
     return () => clearInterval(t);
   }, [venues.length]);
-  if (!row || !venues.length) return null;
+  if (!row || !venues.length) return <div className="skeleton h-[420px] w-full max-w-[460px] mx-auto !rounded-[28px]" />;
   const v = venues[i % venues.length];
   const tokens = INVOICE_USD / v.priceToken!;
   const best = row.venues.find((x) => `${x.chain}:${x.address}` === row.bestSell);
@@ -93,9 +93,11 @@ export function HeroSwap({ initial, ticker = "NVDA" }: { initial: Tape; ticker?:
           <div className="small faint mt-2">Exact amount on Base · verified onchain</div>
         </div>
 
-        <Link href="/pay/new" className="btn btn-primary btn-lg w-full mt-2.5">
-          Create a pay link
-        </Link>
+        {cta && (
+          <Link href="/pay/new" className="btn btn-primary btn-lg w-full mt-2.5">
+            Create a pay link
+          </Link>
+        )}
 
         <div className="flex justify-center gap-1.5 pt-3 pb-1">
           {venues.map((x, n) => (

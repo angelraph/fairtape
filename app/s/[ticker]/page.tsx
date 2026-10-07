@@ -27,7 +27,7 @@ export default async function StockPage({ params }: PageProps<"/s/[ticker]">) {
       <div className="flex items-end justify-between gap-6 flex-wrap">
         <div>
           <div className="small muted">
-            <Link href="/" className="hover:text-text">Tape</Link> / {asset.ticker}
+            <Link href="/tape" className="hover:text-text">Tape</Link> / {asset.ticker}
           </div>
           <h1 className="text-4xl font-semibold tracking-tight mt-1">
             {asset.ticker} <span className="muted font-normal text-2xl">{asset.name}</span>

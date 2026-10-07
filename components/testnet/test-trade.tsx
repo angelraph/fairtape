@@ -7,7 +7,7 @@ import { TEST_STOCKS, RH_TEST_USDC, RH_TEST_WETH, TEST_CHAIN_ID, TEST_EXPLORER }
 import type { SynthraRoute, SynthraTx } from "@/lib/server/synthra";
 import { useTestHoldings } from "../use-test-holdings";
 import { useEvmTx } from "../use-evm-tx";
-import { WalletBar } from "../connect";
+import { WalletBar, openConnect } from "../connect";
 import { amount as fmtAmount } from "@/lib/format";
 
 const ETH = "0x0000000000000000000000000000000000000000";
@@ -218,11 +218,10 @@ export function TestTrade({ initialTicker = "TSLA" }: { initialTicker?: string }
                 </div>
                 <button
                   className={isBest ? "btn btn-primary" : "btn"}
-                  disabled={!evmAddr || executing !== null}
-                  title={evmAddr ? "" : "Connect MetaMask to execute"}
-                  onClick={() => execute(r)}
+                  disabled={executing !== null}
+                  onClick={() => (evmAddr ? execute(r) : openConnect())}
                 >
-                  {executing === key ? "Executing…" : "Execute"}
+                  {executing === key ? "Executing…" : evmAddr ? "Execute" : "Connect to execute"}
                 </button>
               </div>
             </div>

@@ -88,7 +88,7 @@ export default function Docs() {
         <Section id="quickstart" eyebrow="5 minutes" title="Quickstart">
           <h3>Use it</h3>
           <ul>
-            <li>Read the tape on the <Link href="/">home page</Link>. No wallet is needed.</li>
+            <li>Read the <Link href="/tape">live tape</Link>. No wallet is needed.</li>
             <li>Connect Phantom for Solana and MetaMask or Coinbase Wallet for Base and Robinhood Chain.</li>
             <li>Open <Link href="/trade">Trade</Link> to compare every venue, or <Link href="/pay/new">create a pay link</Link>.</li>
             <li>No funds? Use <Link href="/test">testnet mode</Link> with free faucet tokens.</li>

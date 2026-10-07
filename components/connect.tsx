@@ -1,6 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const OPEN_EVENT = "fairtape:connect";
+/** Opens the wallet dialog from anywhere (e.g. a trade button tapped before a wallet is connected). */
+export function openConnect() {
+  window.dispatchEvent(new Event(OPEN_EVENT));
+}
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { useSolanaWallet, SolanaWalletOption, SolanaDisconnect } from "./solana-wallet";
 
@@ -11,6 +17,11 @@ export function short(addr?: string | null, n = 4) {
 
 export function WalletBar() {
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener(OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_EVENT, onOpen);
+  }, []);
   const evm = useAccount();
   const sol = useSolanaWallet();
   const connectedCount = (evm.address ? 1 : 0) + (sol.account ? 1 : 0);

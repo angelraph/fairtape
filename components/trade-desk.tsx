@@ -11,7 +11,7 @@ import { useHoldings } from "./use-holdings";
 import { useExecute } from "./use-execute";
 import { ExecStatus } from "./exec-status";
 import { usd, amount as fmtAmount } from "@/lib/format";
-import { WalletBar } from "./connect";
+import { WalletBar, openConnect } from "./connect";
 
 type Side = "buy" | "sell" | "move";
 type Source = { chain: ChainKey; token: string; symbol: string; decimals: number; balance?: number; label: string };
@@ -185,8 +185,8 @@ export function TradeDesk({ assets, initialTicker, initialSide }: { assets: Asse
           <input className="input num" inputMode="decimal" value={amountStr} onChange={(e) => setAmountStr(e.target.value)} />
         </div>
 
-        <button className="btn btn-primary btn-lg" disabled={!source || loading} onClick={compare}>
-          {loading ? "Asking every venue…" : "Compare every venue"}
+        <button className="btn btn-primary btn-lg" disabled={loading} onClick={source ? compare : connected ? () => setError(`You don't hold any ${ticker} yet. Switch to Buy.`) : openConnect}>
+          {loading ? "Asking every venue…" : source ? "Compare every venue" : connected ? "Compare every venue" : "Connect a wallet"}
         </button>
         {error && <p className="small neg">{error}</p>}
         {!connected && (
@@ -243,11 +243,10 @@ export function TradeDesk({ assets, initialTicker, initialSide }: { assets: Asse
                 {r.ok && (
                   <button
                     className={isBest ? "btn btn-primary" : "btn"}
-                    disabled={!canExecute(r) || executing !== null}
-                    title={canExecute(r) ? "" : "Connect the wallets for both chains to execute"}
-                    onClick={() => run(r)}
+                    disabled={executing !== null}
+                    onClick={() => (canExecute(r) ? run(r) : openConnect())}
                   >
-                    {executing === key ? "Executing…" : "Execute"}
+                    {executing === key ? "Executing…" : canExecute(r) ? "Execute" : "Connect to execute"}
                   </button>
                 )}
               </div>

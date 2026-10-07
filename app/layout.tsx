@@ -20,10 +20,12 @@ export const metadata: Metadata = {
 };
 
 const NAV = [
-  { href: "/", label: "Tape" },
+  { href: "/tape", label: "Tape" },
   { href: "/trade", label: "Trade" },
   { href: "/pay", label: "Pay" },
   { href: "/portfolio", label: "Portfolio" },
+  { href: "/roadmap", label: "Roadmap" },
+  { href: "/faq", label: "FAQ" },
   { href: "/docs", label: "Docs" },
 ];
 
@@ -47,7 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 <WalletBar />
               </div>
             </div>
-            <nav className="md:hidden flex items-center gap-1 text-sm px-3 pb-2 overflow-x-auto">
+            <nav className="md:hidden flex items-center gap-1 text-sm px-3 pb-2 overflow-x-auto no-scrollbar">
               {NAV.map((n) => (
                 <Link key={n.href} href={n.href} className="nav-link shrink-0">{n.label}</Link>
               ))}
@@ -63,9 +65,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                   Non-custodial software. Prices from Jupiter, Uniswap, Aerodrome, Chainlink and Robinhood market data.
                 </p>
               </div>
-              <FooterCol title="Product" links={[["Consolidated tape", "/"], ["Best print", "/trade"], ["Pay links", "/pay"], ["Portfolio", "/portfolio"]]} />
-              <FooterCol title="Build" links={[["Documentation", "/docs"], ["API", "/docs#api"], ["Contracts", "/docs#contracts"], ["Roadmap", "/docs#roadmap"]]} />
-              <FooterCol title="Try it" links={[["Testnet hub", "/test"], ["Testnet trading", "/test/trade"], ["Test pay link", "/pay/new?net=test"], ["FAQ", "/docs#faq"]]} />
+              <FooterCol title="Product" links={[["Consolidated tape", "/tape"], ["Best print", "/trade"], ["Pay links", "/pay"], ["Portfolio", "/portfolio"]]} />
+              <FooterCol title="Build" links={[["Documentation", "/docs"], ["API", "/docs#api"], ["Contracts", "/docs#contracts"], ["Roadmap", "/roadmap"]]} />
+              <FooterCol title="Try it" links={[["Testnet hub", "/test"], ["Testnet trading", "/test/trade"], ["Test pay link", "/pay/new?net=test"], ["FAQ", "/faq"]]} />
             </div>
             <div className="border-t border-line">
               <div className="mx-auto max-w-6xl px-4 py-5 text-xs text-faint flex flex-wrap gap-x-6 gap-y-2 justify-between">
