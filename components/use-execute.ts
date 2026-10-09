@@ -35,6 +35,8 @@ function b64ToBytes(b64: string) {
 function friendly(e: unknown) {
   const msg = e instanceof Error ? e.message : String(e);
   if (/user rejected|denied|rejected the request|cancel/i.test(msg)) return "You rejected the request in your wallet.";
+  if (/unrecognized chain|chain.*not (supported|configured)|unsupported chain|4902|addEthereumChain/i.test(msg))
+    return "This wallet can't use this network. Disconnect and connect OKX Wallet, MetaMask or Rabby instead.";
   if (/insufficient/i.test(msg)) return "Insufficient balance for this amount plus network fees.";
   return msg.split("\n")[0].slice(0, 220);
 }

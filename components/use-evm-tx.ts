@@ -26,6 +26,8 @@ export type TxState =
 export function friendlyError(e: unknown) {
   const msg = e instanceof Error ? e.message : String(e);
   if (/user rejected|denied|rejected the request|cancel/i.test(msg)) return "You rejected the request in your wallet.";
+  if (/unrecognized chain|chain.*not (supported|configured)|unsupported chain|4902|addEthereumChain/i.test(msg))
+    return "This wallet can't use this network. Disconnect and connect OKX Wallet, MetaMask or Rabby instead.";
   if (/insufficient funds|exceeds balance|insufficient/i.test(msg)) return "Not enough balance for this amount plus gas. Top up from the faucet.";
   if (/Too little received|Too much requested|STF|slippage/i.test(msg)) return "Price moved past the 1% limit. Compare again.";
   return msg.split("\n")[0].slice(0, 220);

@@ -43,8 +43,8 @@ export function TestWallet() {
       <div className="panel p-5">
         <div className="font-medium mb-4">Get set up (free, about 10 minutes)</div>
         <ol className="grid gap-4">
-          <Step n={1} done={Boolean(evm.address)} title="Connect MetaMask">
-            Your wallet is asked to add Robinhood Chain Testnet and Base Sepolia the first time you trade or pay.
+          <Step n={1} done={Boolean(evm.address)} title="Connect OKX Wallet, MetaMask or Rabby">
+            Pick it by name in the wallet list. Phantom can&apos;t add Robinhood Chain, so use it for Solana only.
           </Step>
           <Step n={2} done={Boolean(sol.account)} title="Connect Phantom (optional, for Solana Devnet)">
             In Phantom: Settings → Developer Settings → Testnet Mode on.

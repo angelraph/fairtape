@@ -108,13 +108,14 @@ export function ConnectDialog({ onClose }: { onClose: () => void }) {
             </div>
           ) : (
             <div className="grid gap-2">
-              {connectors.map((c) => (
+              {evmOptions(connectors).map((c) => (
                 <button key={c.uid} className="wallet-option" disabled={isPending} onClick={() => connect({ connector: c })}>
                   {c.icon && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={c.icon} alt="" width={22} height={22} />
                   )}
-                  <span>{c.name === "Injected" ? "Browser wallet (MetaMask, Rabby…)" : c.name}</span>
+                  <span>{c.name === "Injected" ? "Browser wallet" : c.name}</span>
+                  {/phantom/i.test(c.name) && <span className="small faint w-full">Base only. Phantom can&apos;t add Robinhood Chain.</span>}
                 </button>
               ))}
               {error && <p className="small neg">{error.message.split("\n")[0]}</p>}
@@ -128,4 +129,14 @@ export function ConnectDialog({ onClose }: { onClose: () => void }) {
       </div>
     </div>
   );
+}
+
+type AnyConnector = ReturnType<typeof useConnect>["connectors"][number];
+
+// With several wallet extensions installed they all fight over window.ethereum, so a generic "Browser wallet" button
+// connects whichever one won. EIP-6963 lists each installed wallet separately: show those, best Robinhood Chain support first.
+function evmOptions(connectors: readonly AnyConnector[]) {
+  const discovered = connectors.some((c) => c.type === "injected" && c.id !== "injected");
+  const list = discovered ? connectors.filter((c) => c.id !== "injected") : [...connectors];
+  return list.sort((a, b) => Number(/phantom/i.test(a.name)) - Number(/phantom/i.test(b.name)));
 }
