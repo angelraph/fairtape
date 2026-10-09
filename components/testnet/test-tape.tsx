@@ -7,7 +7,7 @@ import { TEST_EXPLORER } from "@/lib/testnet";
 import { amount as fmtAmount } from "@/lib/format";
 
 export function TestTape() {
-  const { data, isLoading, error } = useQuery<{ asOf: string; rows: TestTapeRow[] }>({
+  const { data, isLoading, error, refetch } = useQuery<{ asOf: string; rows: TestTapeRow[] }>({
     queryKey: ["test-tape"],
     queryFn: async () => {
       const r = await fetch("/api/testnet/tape");
@@ -16,12 +16,16 @@ export function TestTape() {
       return j;
     },
     refetchInterval: 30_000,
+    // Public testnet RPCs and mobile networks drop requests now and then: retry quietly, keep the last good data.
+    retry: 6,
+    retryDelay: (n) => Math.min(1000 * 2 ** n, 8000),
   });
   if (isLoading) return <div className="skeleton h-64" />;
-  if (error || !data)
+  if (!data)
     return (
-      <div className="panel p-6 small neg">
-        Testnet tape unavailable: {error?.message}. The public testnet RPC may be rate-limiting; it retries every 30s.
+      <div className="panel p-6 small muted flex items-center justify-between gap-4 flex-wrap">
+        <span>Reconnecting to Robinhood Chain Testnet…{error ? " The public testnet node is busy; this retries automatically." : ""}</span>
+        <button className="btn" onClick={() => refetch()}>Retry now</button>
       </div>
     );
   return (

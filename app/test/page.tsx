@@ -11,7 +11,7 @@ export default function TestnetHome() {
         <span className="chip !border-warn/40 warn">TESTNET MODE · free faucet tokens · real onchain transactions</span>
         <h1 className="text-3xl font-semibold tracking-tight mt-3">Try every Fairtape flow for $0</h1>
         <p className="muted mt-2 max-w-2xl">
-          The tape on the home page is live mainnet data. Here, every trade and payment is a real signed transaction on public testnets
+          The <Link href="/tape" className="underline hover:text-text">live tape</Link> is real mainnet data. Here, every trade and payment is a real signed transaction on public testnets
           (Robinhood Chain Testnet, Base Sepolia and Solana Devnet) using tokens from free faucets. Every result links to a block explorer.
         </p>
         <div className="flex gap-3 mt-5 flex-wrap">

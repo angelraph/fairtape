@@ -22,6 +22,8 @@ export function useTestHoldings() {
       return res.json();
     },
     refetchInterval: 20_000,
+    retry: 6,
+    retryDelay: (n) => Math.min(1000 * 2 ** n, 8000),
   });
   return { ...q, evmAddr, solAddr };
 }
