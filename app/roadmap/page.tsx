@@ -13,7 +13,7 @@ export default function RoadmapPage() {
           Where Fairtape <em className="grad-text">goes next.</em>
         </h1>
         <p className="muted text-lg mt-4 max-w-2xl rise" style={{ ["--d" as string]: "160ms" }}>
-          What shipped for the Crypto World&apos;s Fair, and the path from a working product to the checkout for tokenized stocks.
+          What we built for the Crypto World&apos;s Fair, and how we get from here to being the way people pay with tokenized stocks.
         </p>
         <div className="mt-14">
           <Roadmap />

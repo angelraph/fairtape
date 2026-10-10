@@ -189,8 +189,8 @@ export function TestTrade({ initialTicker = "TSLA" }: { initialTicker?: string }
             <div className="text-text font-medium mb-1">
               {side === "buy" ? `Which path gets you the most ${ticker}?` : `Which path pays the most for your ${ticker}?`}
             </div>
-            Fairtape quotes every Synthra pool on Robinhood Chain Testnet: each fee tier directly, and two-hop paths through USDC, WETH and
-            TSLA, onchain, in one call, then ranks them by what you actually receive.
+            Fairtape checks every Synthra pool on Robinhood Chain Testnet, every fee tier and every two-step path through USDC, WETH and
+            TSLA, all in one onchain call. Then it ranks them by what you actually get.
           </div>
         )}
         {loading && [0, 1, 2].map((i) => <div key={i} className="skeleton h-[76px]" />)}

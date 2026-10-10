@@ -91,7 +91,7 @@ export async function listInvoices(recipient: string): Promise<Invoice[]> {
   return rows.map(row);
 }
 
-// ---- onchain verification: the chain, not the client, decides whether an invoice is paid ----
+// onchain verification: the chain, not the client, decides whether an invoice is paid
 
 async function usdcReceivedEvm(inv: Invoice, txHash: string, recipient: string, notBefore: Date) {
   const chain = inv.settle_chain as "base" | "robinhood";

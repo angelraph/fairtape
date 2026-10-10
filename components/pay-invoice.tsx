@@ -222,7 +222,7 @@ function Payer({ inv, onReported }: { inv: Invoice; onReported: () => void }) {
       <div className="font-medium">Pay with anything you hold</div>
       {!connected && (
         <div className="grid gap-3">
-          <p className="small muted">Connect a Solana or Base / Robinhood wallet. Fairtape shows what you hold on all three chains.</p>
+          <p className="small muted">Connect a Solana wallet, or one for Base and Robinhood Chain, and we&apos;ll show you what you hold on all three.</p>
           <WalletBar />
         </div>
       )}

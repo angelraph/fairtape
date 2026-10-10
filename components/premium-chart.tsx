@@ -62,8 +62,8 @@ export function PremiumChart({ ticker }: { ticker: string }) {
     <div className="panel p-5">
       <div className="flex items-center justify-between flex-wrap gap-3 mb-3">
         <div>
-          <div className="font-medium">Premium vs reference, per share</div>
-          <div className="small muted">Basis points above (+) or below (−) the underlying share price. Recorded every minute.</div>
+          <div className="font-medium">How far each issuer drifts from the real price</div>
+          <div className="small muted">How far each issuer trades above (+) or below (−) the real share price, in basis points. We record it every few minutes.</div>
         </div>
         <div className="flex gap-1 p-1 rounded-lg border border-line bg-bg">
           {[6, 24, 72, 168].map((h) => (

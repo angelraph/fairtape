@@ -72,7 +72,7 @@ export function CreateInvoice({ initialNetwork = "mainnet" }: { initialNetwork?:
         ))}
       </div>
       {network === "testnet" && (
-        <p className="small warn -mt-1">Test USDC from free faucets. Real transactions on public testnets, no real value.</p>
+        <p className="small warn -mt-1">Uses free test USDC from the faucets. The transactions are real, the money isn&apos;t.</p>
       )}
       <div>
         <label className="label">Your name or business</label>

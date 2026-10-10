@@ -5,7 +5,7 @@ import { evmClient } from "./clients";
 import { nySession, type Session } from "@/lib/market-hours";
 import { recordSnapshot } from "./snapshots";
 
-// ---------- types ----------
+// types
 
 export type VenueQuote = {
   issuer: Venue["issuer"];
@@ -45,7 +45,7 @@ export type Tape = { asOf: number; session: Session; sessionLabel: string; rows:
 
 const MIN_LIQUIDITY_USD = 10_000;
 
-// ---------- Solana (Jupiter price API: includes Token-2022 scaled-UI multiplier) ----------
+// Solana (Jupiter price API: includes Token-2022 scaled-UI multiplier)
 
 type JupPrice = {
   usdPrice: number;
@@ -84,7 +84,7 @@ function effectiveScaledMultiplier(cfg: JupPrice["scaledUiConfig"], now: number)
   return { current: cfg.multiplier, pending: { value: cfg.newMultiplier, effectiveAt: effAt } };
 }
 
-// ---------- Reference price (Robinhood market data: raw underlying, not multiplier-adjusted) ----------
+// Reference price (Robinhood market data: raw underlying, not multiplier-adjusted)
 
 type RhQuote = { bid: string; ask: string; isTradingHalt: boolean };
 
@@ -99,7 +99,7 @@ async function fetchReference(ticker: string): Promise<RhQuote | null> {
   }
 }
 
-// ---------- EVM venues (Robinhood Chain + Base): multiplier, pool price, pool depth, Chainlink ----------
+// EVM venues (Robinhood Chain + Base): multiplier, pool price, pool depth, Chainlink
 
 const tokenAbi = parseAbi([
   "function uiMultiplier() view returns (uint256)",
@@ -197,7 +197,7 @@ async function readEvmVenues(chain: "base" | "robinhood", venues: Venue[]): Prom
   return out;
 }
 
-// ---------- assembly ----------
+// assembly
 
 function bps(price: number | null, ref: number | null) {
   if (price == null || ref == null || ref === 0) return null;

@@ -32,7 +32,7 @@ export default async function TapePage() {
             One share. <em className="grad-text">Every chain.</em>
           </h1>
           <p className="muted text-lg mt-4 max-w-2xl rise" style={{ ["--d" as string]: "160ms" }}>
-            Every issuer of the same stock on one screen, normalized to one real share and compared with the underlying share price.
+            Every issuer of the same stock on one screen, each priced per real share and compared with what the share actually trades at.
           </p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-10">
             <Stat label="Venues on the tape" value={String(venueCount)} sub="4 issuers · 3 chains" delay={0} />
@@ -53,7 +53,7 @@ export default async function TapePage() {
 
       <section className="mx-auto max-w-6xl px-4 py-10">
         <TapeTable initial={tape} />
-        <p className="small faint mt-3">Tap any stock for its venues, oracle health and premium history.</p>
+        <p className="small faint mt-3">Tap any stock to see everywhere it trades, its oracle checks and its price history.</p>
       </section>
 
       {example && (

@@ -124,7 +124,7 @@ export function ConnectDialog({ onClose }: { onClose: () => void }) {
         </section>
 
         <p className="small faint mt-5">
-          Fairtape never holds funds. Every transaction is built by public routers and signed in your own wallet.
+          Fairtape never holds your money. Public routers build each transaction, and you sign it in your own wallet.
         </p>
       </div>
     </div>

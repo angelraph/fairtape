@@ -39,7 +39,7 @@ export function TapeTable({ initial }: { initial: Tape }) {
       <div className="flex items-center justify-between px-4 py-3 border-b border-line">
         <div className="text-sm">
           <span className="font-medium">Price per underlying share</span>
-          <span className="muted"> · premium vs reference in basis points</span>
+          <span className="muted"> · how far each sits from the real price, in basis points</span>
         </div>
         <div className="small muted flex items-center gap-2">
           <span className={`chain-dot ${isFetching ? "bg-warn" : "bg-pos"}`} />

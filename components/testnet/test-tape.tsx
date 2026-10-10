@@ -76,8 +76,8 @@ export function TestTape() {
         </tbody>
       </table>
       <p className="small faint px-4 py-3 border-t border-line">
-        Live from Synthra V3 pools on Robinhood Chain Testnet (slot0, refreshed every 30s). Testnet prices are set by testers, not by the
-        real market. The point is the mechanism: one token, several pools, several prices. Green marks the cheapest pool to buy from; faded pools hold under 50 test USDC and are left out of the spread.
+        Read live from the Synthra pools on Robinhood Chain Testnet and refreshed every 30 seconds. Testers set these prices, not the
+        real market, so what matters is the pattern: one token, several pools, several prices. Green is the cheapest pool to buy from. Faded pools hold less than 50 test USDC, so we leave them out of the spread.
       </p>
     </div>
   );

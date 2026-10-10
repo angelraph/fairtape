@@ -205,8 +205,8 @@ export function TradeDesk({ assets, initialTicker, initialSide }: { assets: Asse
               {side === "sell" && `Where does your ${ticker} fetch the most dollars?`}
               {side === "move" && `Move your ${ticker} to another issuer or chain`}
             </div>
-            Fairtape asks LI.FI for an executable route to every venue, then ranks them by value delivered per underlying share,
-            after fees, bridges and each issuer&apos;s multiplier.
+            Fairtape asks for a real route to every venue, then ranks them by how many actual shares you&apos;d end up with after fees,
+            bridges and each issuer&apos;s multiplier.
           </div>
         )}
         {loading && [0, 1, 2].map((i) => <div key={i} className="skeleton h-[92px]" />)}

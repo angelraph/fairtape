@@ -14,7 +14,7 @@ export function PortfolioView() {
   if (!evmAddr && !solAddr)
     return (
       <div className="panel p-10 text-center grid gap-4 justify-items-center">
-        <p className="muted max-w-md">Connect a Solana wallet and a Base / Robinhood wallet. Fairtape reads your balances directly from all three chains.</p>
+        <p className="muted max-w-md">Connect your Solana wallet and your Base and Robinhood wallet, and we&apos;ll read your balances straight from all three chains.</p>
         <WalletBar />
       </div>
     );
@@ -33,7 +33,7 @@ export function PortfolioView() {
         <div className="panel p-4">
           <div className="label">Stocks + dollars</div>
           <div className="num text-2xl">{usd(total)}</div>
-          <div className="small faint">valued per share at reference</div>
+          <div className="small faint">valued at the real share price</div>
         </div>
         <div className="panel p-4">
           <div className="label">Stock positions</div>

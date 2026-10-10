@@ -12,8 +12,8 @@ export default async function TradePage({ searchParams }: PageProps<"/trade">) {
     <div className="mx-auto max-w-6xl px-4 py-10">
       <h1 className="text-3xl font-semibold tracking-tight">Best print</h1>
       <p className="muted mt-2 mb-8 max-w-2xl">
-        Start from whatever you hold on any chain. Fairtape prices every issuer and chain for the same stock and executes the route that
-        delivers the most real shares, or the most dollars when you sell.
+        Start with whatever you hold, on any chain. Fairtape checks every issuer of the stock you want and takes the route that gets you
+        the most real shares, or the most dollars when you sell.
       </p>
       <TradeDesk assets={assets} initialTicker={ticker} initialSide={side} />
     </div>

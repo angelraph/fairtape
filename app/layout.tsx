@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: "Fairtape | Pay anyone. In public markets.",
   description:
-    "The consolidated tape and checkout for tokenized stocks. One share, four issuers, three chains: Fairtape prices every one per real share, routes you to the best print, and lets anyone settle a USDC invoice with stocks.",
+    "See what a tokenized stock really costs on every chain, buy it where it's cheapest, and let people pay you in dollars with the stocks they hold.",
 };
 
 const NAV = [
@@ -62,7 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <div>
                 <FullLogo width={240} />
                 <p className="small faint mt-5 max-w-xs leading-relaxed">
-                  Non-custodial software. Prices from Jupiter, Uniswap, Aerodrome, Chainlink and Robinhood market data.
+                  We never hold your money. Prices come from Jupiter, Uniswap, Aerodrome, Chainlink and Robinhood&apos;s market data.
                 </p>
               </div>
               <FooterCol title="Product" links={[["Consolidated tape", "/tape"], ["Best print", "/trade"], ["Pay links", "/pay"], ["Portfolio", "/portfolio"]]} />
@@ -71,7 +71,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </div>
             <div className="border-t border-line">
               <div className="mx-auto max-w-6xl px-4 py-5 text-xs text-faint flex flex-wrap gap-x-6 gap-y-2 justify-between">
-                <span>Tokenized stocks are not available to US persons and are restricted in some other jurisdictions. Not investment advice.</span>
+                <span>Tokenized stocks aren&apos;t available to US persons, and some other countries restrict them too. Nothing here is investment advice.</span>
                 <span>© 2026 Fairtape</span>
               </div>
             </div>

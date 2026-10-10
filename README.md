@@ -1,105 +1,90 @@
 # Fairtape
 
-**The consolidated tape for onchain stocks.** One NVIDIA, four issuers, three chains, one fair price.
+**One stock, one fair price, wherever it trades onchain.**
 
-NVIDIA now trades onchain as **NVDAx** (xStocks) and **NVDAon** (Ondo) on Solana, **NVDA** on Robinhood Chain and **NVDAc**
-(Coinbase) on Base. Each venue has its own price, its own liquidity and its own dividend multiplier, so no single screen tells you
-what one real share costs. Fairtape does three things:
+Here's the problem that got me started. NVIDIA now trades onchain as four different tokens on three chains: NVDAx (xStocks) and NVDAon (Ondo) on Solana, NVDA on Robinhood Chain and NVDAc (Coinbase) on Base. Each has its own price, its own liquidity and its own way of handling dividends. So if you ask "what does one NVIDIA share cost onchain right now?", nobody can tell you.
 
-1. **Tape.** It shows every issuer of the same stock on one screen, priced **per underlying share**, with the premium or discount to
-   the reference share price.
-2. **Best print.** You start from whatever you hold on any chain. Fairtape asks for an executable route to every venue and ranks the
-   routes by how many real shares, or dollars, you receive after fees and bridges. Then you sign once.
-3. **Pay links.** A merchant requests exact USDC on Base or Solana, and the payer settles with any stock, stablecoin or gas token on
-   any of the three chains. The invoice is marked paid only after the server verifies the settlement transaction onchain.
+Fairtape answers that, and then lets you act on it. It does three things:
 
-Everything runs on mainnet. Nothing is mocked, simulated or custodied.
+1. **The tape.** Every issuer of the same stock on one screen, priced per real share, with how far each one sits above or below the actual share price.
+2. **Best print.** Start from whatever you hold, on any chain. Fairtape asks for a real, executable route to every venue, ranks them by how many shares (or dollars) you actually end up with after fees and bridges, and you sign once.
+3. **Pay links.** Ask for an exact amount of USDC on Base or Solana. Whoever pays you can use any stock, stablecoin or gas token they hold on any of the three chains. The link only turns "Paid" once our server has read the settlement transaction onchain.
 
-## Why per share matters
+All the data is live mainnet data. Nothing is mocked, and Fairtape never holds anyone's money.
 
-Issuers reinvest dividends by changing how many shares one token represents:
+## Why "per share" matters
 
-| Venue | Multiplier model | Read from |
-|---|---|---|
-| xStocks, Ondo (Solana) | Token-2022 `scaledUiAmountConfig` (`newMultiplier` once its effective time passes) | Jupiter price API / mint account |
-| Robinhood (Robinhood Chain) | ERC-8056 `uiMultiplier()` | token contract |
-| Coinbase (Base) | B20 `uiMultiplier()` | token contract |
+Issuers pay out dividends by quietly changing how many shares one token stands for. Each does it differently:
 
-On 2026-10-01, SPYx's multiplier was **1.0057**. Comparing raw token prices was off by 57 bp, which is wider than the spread you're
-trying to capture. Fairtape divides every venue's token price by its live multiplier before comparing anything.
+* **xStocks and Ondo (Solana)** use the Token-2022 scaled UI amount. The new multiplier kicks in at a set time, and we read it from Jupiter's price API or the mint account.
+* **Robinhood (Robinhood Chain)** uses ERC-8056 `uiMultiplier()` on the token contract.
+* **Coinbase (Base)** uses the B20 `uiMultiplier()` on the token contract.
 
-## Data sources (all live, all verifiable)
+On October 1, one SPYx token was worth 1.0057 shares. If you compared raw token prices, you were already off by 57 basis points, which is more than the price gap you'd be trying to catch. So before comparing anything, Fairtape divides every token price by that issuer's live multiplier.
 
-- **Robinhood Chain (4663):**
-  - Stock token prices come from the deepest v3-style USDG pool (Uniswap v3, Ramses), read with `slot0`.
-  - Depth comes from the pool's balances.
-  - Each venue is cross-checked against its Chainlink feed, with `oraclePaused()` honored.
-- **Base (8453):** Coinbase B20 stock prices come from the deepest Aerodrome Slipstream or Uniswap v3 USDC pool, cross-checked against the Chainlink "Coinbase X" feeds.
-- **Solana:** xStocks and Ondo prices and liquidity come from Jupiter's price API, which includes the scaled-UI multiplier.
-- **Reference:** the underlying share bid/ask from Robinhood's public market-data API (`/rhj/prices`), including trading halts.
-- **Execution:** LI.FI quotes (Jupiter, 1inch, Kyberswap, Across, Relay, CCTPv2, Mayan…). Every transaction is signed in the user's own wallet.
-- **Registry:** `scripts/build-registry.mjs` discovers every venue from issuer and oracle indexes and verifies each address onchain
-  (`symbol()`, `decimals()`, pool tokens) before it reaches the app. Unverified lookalikes are excluded. For example, a fake "NVDAx" exists on Solana.
+## Where the numbers come from
 
-## Architecture
+Everything below is live, and you can check it yourself.
+
+* **Robinhood Chain:** stock prices come from the deepest USDG pool (Uniswap v3 or Ramses) and depth from the pool's balances. Each one is checked against its Chainlink feed, and we respect the oracle pause during corporate actions.
+* **Base:** Coinbase stock prices come from the deepest Aerodrome or Uniswap v3 USDC pool, checked against Chainlink's Coinbase feeds.
+* **Solana:** xStocks and Ondo prices and liquidity come from Jupiter, multiplier included.
+* **The real share price:** Robinhood's public market data, which also tells us when trading is halted.
+* **Trading:** routes come from LI.FI, which pulls in Jupiter, 1inch, Kyberswap, Across, Relay, Circle CCTP and Mayan. You sign every transaction in your own wallet.
+* **The token list:** `scripts/build-registry.mjs` finds each venue from the issuers' and oracles' own lists, then checks every address onchain before the app uses it. That matters: there's a fake "NVDAx" on Solana, and it never makes it in.
+
+## How the code is laid out
 
 ```
 app/                     Next.js 16 App Router
-  page.tsx               the tape (live, auto-refreshing)
-  s/[ticker]             venue cards, oracle health, premium history chart
-  trade                  best-print router: buy / sell / switch issuer
-  pay, pay/new, pay/[id] pay links with onchain settlement verification
-  portfolio              holdings across 3 chains, in real shares
-  api/                   tape, routes, balances, invoices, status, confirm, history, cron
+  tape                   the live tape
+  s/[ticker]             one stock across every venue, with its history chart
+  trade                  best print: buy, sell or switch issuer
+  pay, pay/new, pay/[id] pay links, verified onchain
+  portfolio              your holdings on all three chains, in real shares
+  test, test/trade       the free testnet versions of every flow
+  api/                   the server routes behind all of the above
 lib/server/
-  tape.ts                multicall reads + normalization + best venue per stock
-  routes.ts, lifi.ts     route discovery and ranking
-  invoices.ts            invoice lifecycle; verifies USDC delivery from receipts / token balances
-  snapshots.ts, db.ts    minute-by-minute premium history (Postgres, or embedded PGlite locally)
-  balances.ts            wallet holdings on Solana, Base and Robinhood Chain
-components/              wallet connection (Wallet Standard + wagmi), executor, UI
+  tape.ts                reads every venue and puts them on one per-share scale
+  routes.ts, lifi.ts     finds and ranks routes
+  invoices.ts            pay links, and the onchain check that marks them paid
+  snapshots.ts, db.ts    price history (Postgres in production, PGlite locally)
+  balances.ts            wallet balances on Solana, Base and Robinhood Chain
+components/              wallets, the transaction runner and the UI
 ```
 
-## Testnet mode: every flow for $0
+## Try every flow for free
 
-The tape is always live mainnet data. Execution can also run on public testnets with free faucet tokens (`/test`). Every action is a real
-signed transaction with an explorer link.
+The tape always shows real mainnet prices. But you can run every transaction on public testnets with free faucet tokens at `/test`. Each one is a real signed transaction with an explorer link.
 
-| Flow | Testnet | How |
-|---|---|---|
-| Best print | Robinhood Chain Testnet (46630) | Official Robinhood test stocks (TSLA, AMZN, AMD, PLTR, NFLX) on Synthra V3 (a Uniswap v3 fork). Each fee tier and each two-hop path through USDC, WETH or TSLA is quoted onchain by QuoterV2 in a single Multicall3 call, ranked, and executed through SwapRouter02. |
-| Pay with a stock | Robinhood Chain Testnet | One exact-output swap sells the payer's test stock and delivers **exactly** the invoiced test USDC straight to the merchant. |
-| Pay with USDC | Base Sepolia, Solana Devnet, Robinhood Chain Testnet | Direct transfer. The server verifies it from the receipt or token balances. |
-| Cross-chain pay | Base Sepolia → Solana Devnet | Circle CCTP V2 fast transfer with the **Forwarding Service**. The payer signs once, and Circle mints on Solana and opens the merchant's USDC account if needed. The server marks the invoice paid only after it sees the Solana mint. |
+* **Best print** runs on Robinhood Chain Testnet, using Robinhood's own test stocks (TSLA, AMZN, AMD, PLTR, NFLX) on Synthra, a Uniswap v3 fork. We quote every pool and every two-step path in one onchain call, rank them, and execute the best.
+* **Paying with a stock** also runs on Robinhood Chain Testnet. One swap sells the payer's test stock and sends exactly the requested test USDC straight to the merchant.
+* **Paying with USDC** works on Base Sepolia, Solana Devnet and Robinhood Chain Testnet, and the server confirms each payment from the chain.
+* **Paying across chains** goes from Base Sepolia to Solana Devnet with Circle CCTP. The payer signs once, Circle delivers on Solana (and opens the merchant's USDC account if needed), and the link is only marked paid once we see the USDC arrive.
 
-Testnet prices are set by testers, so the UI labels them. What carries over to mainnet is the mechanism: one token, several pools, several prices.
-Addresses are in `lib/testnet.ts`. RESEARCH.md §6 records how each one was verified.
+Testnet prices are set by whoever trades there, so the app labels them clearly. What carries over to mainnet is the mechanism itself: one token, several pools, several prices.
 
-Limits: there's no bridge out of Robinhood Chain Testnet, LI.FI doesn't serve these testnets, and xStocks and Coinbase stock tokens exist only on mainnet.
-So on testnet, stock payments settle on Robinhood Chain Testnet, and the cross-chain path covers USDC from Base Sepolia to Solana Devnet.
+A few honest limits on testnet: you can't bridge out of Robinhood Chain Testnet, LI.FI doesn't cover these testnets, and xStocks and Coinbase stocks only exist on mainnet. So test stock payments settle on Robinhood Chain Testnet, and the cross-chain demo moves USDC from Base Sepolia to Solana Devnet.
 
-## Run locally
+## Running it yourself
 
 ```bash
 npm install
 npm run dev
 ```
 
-No keys are required. Optional environment variables:
+You don't need any keys. These settings are optional:
 
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | Postgres for production (otherwise an embedded PGlite in `.data/`) |
-| `SOLANA_RPC`, `NEXT_PUBLIC_SOLANA_RPC` | Private Solana RPC (e.g. Helius) |
-| `ROBINHOOD_RPC`, `BASE_RPC` | Private EVM RPCs (public endpoints are rate-limited) |
-| `LIFI_API_KEY`, `LIFI_INTEGRATOR`, `LIFI_FEE` | Higher LI.FI limits and the integrator fee (the business model) |
-| `JUPITER_API_KEY` | Jupiter Pro price API |
-| `CRON_SECRET` | Protects `/api/cron/snapshot` |
+* `DATABASE_URL`: a Postgres database for production. Without it, the app uses a small embedded database in `.data/`.
+* `SOLANA_RPC`, `NEXT_PUBLIC_SOLANA_RPC`, `ROBINHOOD_RPC`, `BASE_RPC`: your own RPC endpoints, since the public ones are rate limited.
+* `LIFI_API_KEY`, `LIFI_INTEGRATOR`, `LIFI_FEE`: higher LI.FI limits, plus the small routing fee that is the business model.
+* `JUPITER_API_KEY`: Jupiter's paid price API.
+* `CRON_SECRET`: protects the snapshot endpoint, which a GitHub Action calls every five minutes to record price history.
 
-To regenerate the verified registry, run `node scripts/build-registry.mjs`.
+To rebuild the verified token list, run `node scripts/build-registry.mjs`.
 
-## Honest limits
+## What Fairtape doesn't do
 
-- Fairtape doesn't mint, redeem or wrap stock tokens. Issuers are separate legal claims, and only dollars (USDC/USDG) move between chains.
-- Tokenized stocks are not available to US persons, or in some other jurisdictions, under issuer terms. Fairtape is non-custodial software, not a broker.
-- Route quality depends on public liquidity and routers. Thin venues (most Ondo pools today) are shown but never chosen as "best".
+* It doesn't mint, redeem or wrap stock tokens. Each issuer's token is its own legal claim, so only dollars (USDC or USDG) ever move between chains.
+* Tokenized stocks aren't available to US persons, or in a few other countries, under the issuers' terms. Fairtape is software that never holds your funds. It isn't a broker.
+* A route is only as good as the liquidity behind it. Thin venues, like most Ondo pools today, still show up on the tape, but they're never picked as the best price.

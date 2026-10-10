@@ -11,8 +11,8 @@ export default function TestnetHome() {
         <span className="chip !border-warn/40 warn">TESTNET MODE · free faucet tokens · real onchain transactions</span>
         <h1 className="text-3xl font-semibold tracking-tight mt-3">Try every Fairtape flow for $0</h1>
         <p className="muted mt-2 max-w-2xl">
-          The <Link href="/tape" className="underline hover:text-text">live tape</Link> is real mainnet data. Here, every trade and payment is a real signed transaction on public testnets
-          (Robinhood Chain Testnet, Base Sepolia and Solana Devnet) using tokens from free faucets. Every result links to a block explorer.
+          The <Link href="/tape" className="underline hover:text-text">live tape</Link> shows real mainnet prices. Down here, every trade and payment is a real transaction you sign yourself, on public testnets
+          (Robinhood Chain Testnet, Base Sepolia and Solana Devnet), using free faucet tokens. You get an explorer link for each one.
         </p>
         <div className="flex gap-3 mt-5 flex-wrap">
           <Link href="/test/trade" className="btn btn-primary btn-lg">Trade test stocks</Link>
@@ -22,7 +22,7 @@ export default function TestnetHome() {
       <TestWallet />
       <section>
         <h2 className="text-xl font-semibold tracking-tight mb-1">Testnet tape</h2>
-        <p className="muted small mb-4">The same fragmentation as mainnet, reproducible with faucet tokens.</p>
+        <p className="muted small mb-4">The same split-up market as mainnet, so you can see it for yourself with free tokens.</p>
         <TestTape />
       </section>
     </div>

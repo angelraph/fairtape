@@ -44,3 +44,7 @@ next-env.d.ts
 /.data
 
 .vercel
+
+# written by next dev for coding agents; kept local
+/AGENTS.md
+/CLAUDE.md

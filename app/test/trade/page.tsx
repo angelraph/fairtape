@@ -12,8 +12,8 @@ export default async function TestTradePage({ searchParams }: PageProps<"/test/t
       <span className="chip !border-warn/40 warn">TESTNET · Robinhood Chain Testnet · free faucet tokens</span>
       <h1 className="text-3xl font-semibold tracking-tight mt-3">Best print (testnet)</h1>
       <p className="muted mt-2 mb-8 max-w-2xl">
-        Swap the official Robinhood test stock tokens. Fairtape quotes every pool and path onchain, then executes the one that gives you the
-        most, signed in your own wallet.
+        Trade Robinhood&apos;s official test stocks. Fairtape checks every pool and path onchain, then runs whichever one gives you the
+        most. You sign it in your own wallet.
       </p>
       <TestTrade initialTicker={ticker} />
     </div>

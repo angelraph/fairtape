@@ -23,18 +23,18 @@ const SECTIONS = [
 ] as const;
 
 const API: [string, string, string][] = [
-  ["GET", "/api/tape", "Live consolidated tape: every venue of every stock, priced per share, with premium vs reference and best buy/sell."],
-  ["GET", "/api/history/{ticker}?hours=72", "Minute snapshots of each venue's premium (up to 30 days)."],
-  ["POST", "/api/routes", "Executable routes from one asset to every venue of a stock, ranked by value delivered."],
-  ["GET", "/api/status?txHash&fromChain&toChain", "Cross-chain delivery status for a routed transaction."],
-  ["GET", "/api/balances?evm&solana", "Holdings on Solana, Base and Robinhood Chain, in real shares."],
+  ["GET", "/api/tape", "The live tape: every venue for every stock, priced per real share, with how far each sits from the real price and where to buy or sell."],
+  ["GET", "/api/history/{ticker}?hours=72", "Price history for each venue, recorded every few minutes (up to 30 days back)."],
+  ["POST", "/api/routes", "Real routes from one asset to every venue of a stock, best first."],
+  ["GET", "/api/status?txHash&fromChain&toChain", "Whether a cross-chain transaction has arrived yet."],
+  ["GET", "/api/balances?evm&solana", "What a wallet holds on Solana, Base and Robinhood Chain, counted in real shares."],
   ["POST", "/api/invoices", "Create a pay link: { network, merchantName, memo, amountUsd, settleChain, recipient }."],
-  ["GET", "/api/invoices/{id}", "Invoice with status re-verified from chain data."],
-  ["POST", "/api/invoices/{id}/quote", "Price paying an invoice with any asset: { fromChain, fromToken, fromAddress }."],
-  ["POST", "/api/invoices/{id}", "Report a signed payment transaction; the server verifies it onchain."],
-  ["GET", "/api/testnet/tape", "Synthra pool prices for every Robinhood test stock, per fee tier."],
-  ["POST", "/api/testnet/quote", "Quote every Synthra path; with recipient, returns the transaction to sign."],
-  ["GET", "/api/testnet/balances?evm&solana", "Balances on Robinhood Chain Testnet, Base Sepolia and Solana Devnet."],
+  ["GET", "/api/invoices/{id}", "A pay link, with its status checked against the chain again."],
+  ["POST", "/api/invoices/{id}/quote", "How much of any asset it takes to pay a link: { fromChain, fromToken, fromAddress }."],
+  ["POST", "/api/invoices/{id}", "Tell us about a signed payment, and the server checks it onchain."],
+  ["GET", "/api/testnet/tape", "Synthra pool prices for each Robinhood test stock, in every fee tier."],
+  ["POST", "/api/testnet/quote", "Prices every Synthra path. Add a recipient and you get the transaction to sign."],
+  ["GET", "/api/testnet/balances?evm&solana", "Test balances on Robinhood Chain Testnet, Base Sepolia and Solana Devnet."],
 ];
 
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: ReactNode }) {
@@ -67,76 +67,76 @@ export default function Docs() {
           <div className="chip">Docs · v0.2 · October 2026</div>
           <h1 className="display text-[56px] sm:text-[72px] mt-5">Fairtape documentation</h1>
           <p className="muted text-lg mt-4 max-w-2xl">
-            How the consolidated tape, the best-print router and stock-funded pay links work, which contracts they touch, and where the
-            product is going.
+            Everything about how Fairtape works: the tape, best print and pay links, the contracts behind them, and where we&apos;re
+            heading next.
           </p>
         </header>
 
         <Section id="overview" eyebrow="Start here" title="Overview">
           <p>
-            Tokenized stocks are fragmenting. The same NVIDIA share trades as <strong>NVDAx</strong> and <strong>NVDAon</strong> on
-            Solana, <strong>NVDA</strong> on Robinhood Chain and <strong>NVDAc</strong> on Base. Each has its own price, liquidity and
-            dividend multiplier. Fairtape treats them as one market:
+            Tokenized stocks are splitting apart. The same NVIDIA share trades as <strong>NVDAx</strong> and <strong>NVDAon</strong> on
+            Solana, <strong>NVDA</strong> on Robinhood Chain and <strong>NVDAc</strong> on Base. Each has its own price, its own liquidity and its own
+            way of handling dividends. Fairtape puts them back together as one market:
           </p>
           <ul>
-            <li><strong>Tape:</strong> {venueCount} venues across {assets.length} stocks, priced per underlying share against the reference share price.</li>
-            <li><strong>Best print:</strong> start from any asset on any chain and execute the route that delivers the most real shares or dollars.</li>
-            <li><strong>Pay links:</strong> request exact USDC on Base or Solana; the payer settles with any stock they hold.</li>
+            <li><strong>Tape:</strong> {venueCount} venues across {assets.length} stocks, each priced per real share and compared with the actual share price.</li>
+            <li><strong>Best print:</strong> start from anything you hold, on any chain, and take the route that gets you the most shares or dollars.</li>
+            <li><strong>Pay links:</strong> ask for an exact amount of USDC on Base or Solana, and let people pay with whatever stock they hold.</li>
           </ul>
         </Section>
 
         <Section id="quickstart" eyebrow="5 minutes" title="Quickstart">
           <h3>Use it</h3>
           <ul>
-            <li>Read the <Link href="/tape">live tape</Link>. No wallet is needed.</li>
+            <li>Have a look at the <Link href="/tape">live tape</Link>. You don&apos;t need a wallet for that.</li>
             <li>Connect Phantom for Solana and MetaMask or Coinbase Wallet for Base and Robinhood Chain.</li>
-            <li>Open <Link href="/trade">Trade</Link> to compare every venue, or <Link href="/pay/new">create a pay link</Link>.</li>
-            <li>No funds? Use <Link href="/test">testnet mode</Link> with free faucet tokens.</li>
+            <li>Open <Link href="/trade">Trade</Link> to compare every venue, or <Link href="/pay/new">make a pay link</Link>.</li>
+            <li>No money to spare? <Link href="/test">Testnet mode</Link> runs on free faucet tokens.</li>
           </ul>
           <h3>Run it locally</h3>
           <p>
-            <code>npm install</code> then <code>npm run dev</code>. No keys are required. Set <code>DATABASE_URL</code> for Postgres in
-            production; locally an embedded PGlite database is created in <code>.data/</code>.
+            <code>npm install</code> then <code>npm run dev</code>. You don&apos;t need any keys. In production, set <code>DATABASE_URL</code> to a
+            Postgres database. Locally, the app makes a small embedded one in <code>.data/</code>.
           </p>
         </Section>
 
         <Section id="per-share" eyebrow="The insight" title="Per-share pricing">
-          <p>Issuers pass dividends through by changing how many shares one token represents. Fairtape reads the live multiplier for each venue and divides it out:</p>
+          <p>Issuers pay dividends by quietly changing how many shares one token stands for. Fairtape reads that live number for every venue and takes it out before comparing prices:</p>
           <ul>
-            <li><strong>xStocks and Ondo (Solana):</strong> Token-2022 <code>scaledUiAmountConfig</code>, including a pending <code>newMultiplier</code> once its effective time passes.</li>
-            <li><strong>Robinhood (Robinhood Chain):</strong> ERC-8056 <code>uiMultiplier()</code>; <code>oraclePaused()</code> is honored during corporate actions.</li>
+            <li><strong>xStocks and Ondo (Solana):</strong> Token-2022 <code>scaledUiAmountConfig</code>, including a scheduled <code>newMultiplier</code> once its start time has passed.</li>
+            <li><strong>Robinhood (Robinhood Chain):</strong> ERC-8056 <code>uiMultiplier()</code>; we also respect <code>oraclePaused()</code> during corporate actions like splits.</li>
             <li><strong>Coinbase (Base):</strong> B20 <code>uiMultiplier()</code>.</li>
           </ul>
           <p>
-            Each venue is then compared with the underlying share&apos;s bid/ask from Robinhood market data, and cross-checked against
-            Chainlink feeds on Robinhood Chain and Base. Thin pools are shown but never chosen as best.
+            We then compare each venue with the real share&apos;s bid and ask from Robinhood&apos;s market data, and double-check it against
+            Chainlink on Robinhood Chain and Base. Thin pools still show up, but we never call them the best price.
           </p>
         </Section>
 
         <Section id="routing" eyebrow="Execution" title="Best-print routing">
           <p>
-            For a buy, Fairtape requests a route from your asset to <em>every</em> venue of the stock. For a sell, it routes to USDC/USDG on
-            each chain. Routes come from LI.FI (Jupiter, 1inch, Kyberswap, Across, Relay, CCTP v2, Mayan…) and are ranked by value delivered
-            per underlying share, after fees and bridges. Right before signing, the chosen route is quoted again. Approvals are for the exact
-            amount only.
+            When you buy, Fairtape asks for a route from what you hold to <em>every</em> venue for that stock. When you sell, it looks for
+            the best way into USDC or USDG on each chain. The routes come from LI.FI, which pulls in Jupiter, 1inch, Kyberswap, Across,
+            Relay, Circle CCTP and Mayan, and we rank them by what you actually get per real share after fees and bridges. Just before you
+            sign, we price your chosen route one more time, and we only ever ask you to approve the exact amount.
           </p>
         </Section>
 
         <Section id="pay-links" eyebrow="Checkout" title="Pay links">
           <ul>
-            <li>The merchant chooses an amount and a USDC address on Base or Solana. No account is needed.</li>
-            <li>The payer picks any holding; Fairtape quotes an <strong>exact-output</strong> route so the merchant receives precisely the invoiced amount.</li>
-            <li>The payer reports the signed transaction, and the server verifies it independently: USDC <code>Transfer</code> logs on EVM, token-balance deltas on Solana, and for cross-chain payments the delivery transaction on the destination chain.</li>
-            <li>A transaction can pay only one invoice, and it must land after the invoice was created. Underpaid or reverted payments reopen the invoice.</li>
+            <li>You pick an amount and the Base or Solana address where you want the USDC. No sign-up needed.</li>
+            <li>Whoever pays picks anything they hold, and Fairtape finds an <strong>exact-output</strong> route so you get precisely what you asked for.</li>
+            <li>Once they sign, our server checks the payment for itself: the USDC <code>Transfer</code> on Base or Robinhood Chain, the balance change on Solana, and for cross-chain payments, the transaction that delivers the money on your chain.</li>
+            <li>One transaction can only pay one link, and it has to happen after the link was made. If a payment comes up short or fails, the link simply opens up again.</li>
           </ul>
         </Section>
 
         <Section id="testnet" eyebrow="$0 to try" title="Testnet mode">
-          <p>Every flow runs on public testnets with free tokens, as real transactions:</p>
+          <p>You can try every part of Fairtape on public testnets with free tokens. Each one is a real transaction:</p>
           <ul>
-            <li><strong>Trading:</strong> the official Robinhood test stocks ({TEST_STOCKS.map((s) => s.ticker).join(", ")}) on Synthra V3. Each fee tier and each two-hop path through USDC, WETH or TSLA is quoted by QuoterV2 in one Multicall3 call.</li>
-            <li><strong>Pay with a stock:</strong> one exact-output swap on Robinhood Chain Testnet delivers exactly the invoiced test USDC to the merchant.</li>
-            <li><strong>Cross-chain:</strong> Base Sepolia → Solana Devnet through Circle CCTP V2 fast transfer with the Forwarding Service. Circle mints on Solana, and the server waits for that mint before marking the invoice paid.</li>
+            <li><strong>Trading:</strong> the official Robinhood test stocks ({TEST_STOCKS.map((s) => s.ticker).join(", ")}) on Synthra V3. We price every fee tier and every two-step path through USDC, WETH or TSLA in a single onchain call.</li>
+            <li><strong>Pay with a stock:</strong> one swap on Robinhood Chain Testnet sells the stock and sends exactly the requested test USDC to the merchant.</li>
+            <li><strong>Cross-chain:</strong> Base Sepolia to Solana Devnet through Circle CCTP. Circle delivers the USDC on Solana, and we wait until it lands before marking the link paid.</li>
           </ul>
           <h3>Faucets</h3>
           <ul>
@@ -144,11 +144,11 @@ export default function Docs() {
             <li><a href={FAUCETS.circle} target="_blank" rel="noreferrer">Circle faucet</a>: USDC on Base Sepolia and Solana Devnet</li>
             <li><a href={FAUCETS.baseEth} target="_blank" rel="noreferrer">Base Sepolia ETH</a> · <a href={FAUCETS.solana} target="_blank" rel="noreferrer">Solana devnet SOL</a></li>
           </ul>
-          <p>Testnet prices are set by testers, not the market; the mechanism is what carries over to mainnet.</p>
+          <p>Testnet prices are whatever testers trade them at, not real market prices. What carries over to mainnet is how it all works.</p>
         </Section>
 
         <Section id="contracts" eyebrow="Verify us" title="Contracts & sources">
-          <p>Every address is checked onchain (<code>symbol()</code>, <code>decimals()</code>, pool tokens) before it enters the registry. A sample:</p>
+          <p>We check every address onchain (its <code>symbol()</code>, <code>decimals()</code> and pool tokens) before it goes into the app. Here are a few:</p>
           <div className="panel overflow-x-auto mt-4 not-prose">
             <table className="table min-w-[640px]">
               <thead>
@@ -170,11 +170,11 @@ export default function Docs() {
               </tbody>
             </table>
           </div>
-          <p className="mt-4">The full registry is generated by <code>scripts/build-registry.mjs</code>; testnet addresses live in <code>lib/testnet.ts</code>.</p>
+          <p className="mt-4">The full list is built by <code>scripts/build-registry.mjs</code>, and the testnet addresses are in <code>lib/testnet.ts</code>.</p>
         </Section>
 
         <Section id="api" eyebrow="Build on it" title="API">
-          <p>All endpoints are public JSON over HTTPS. They return no secrets, never sign anything and never hold funds.</p>
+          <p>Everything here is plain public JSON. None of it returns secrets, signs anything or touches anyone&apos;s money.</p>
           <div className="grid gap-2 mt-4">
             {API.map(([m, path, d]) => (
               <div key={`${m} ${path}`} className="panel p-4 grid sm:grid-cols-[64px_1fr] gap-2 sm:gap-4 items-start">
@@ -190,19 +190,19 @@ export default function Docs() {
 
         <Section id="security" eyebrow="Honest limits" title="Security & limits">
           <ul>
-            <li>Non-custodial: Fairtape never holds keys or funds, and every transaction is signed by the user.</li>
-            <li>Verified-issuer registry only; known lookalike tokens are excluded.</li>
-            <li>Fairtape doesn&apos;t mint, redeem or wrap stock tokens. Issuers are separate legal claims, and only dollars move between chains.</li>
-            <li>Stock tokens are not available to US persons and are restricted in some other jurisdictions. Fairtape is software, not a broker.</li>
-            <li>Route quality depends on public liquidity. Quotes can move between pricing and signing, so every swap carries a minimum-received limit.</li>
+            <li>Fairtape never holds your keys or your money. You sign every transaction yourself.</li>
+            <li>We only list tokens from verified issuers, and we keep known fakes out.</li>
+            <li>We don&apos;t mint, redeem or wrap stock tokens. Each issuer&apos;s token is its own legal claim, so only dollars move between chains.</li>
+            <li>Stock tokens aren&apos;t available to US persons, and a few other countries restrict them too. Fairtape is software, not a broker.</li>
+            <li>A route is only as good as the liquidity behind it. Prices can move between the quote and your signature, so every swap has a minimum you&apos;re guaranteed to receive.</li>
           </ul>
         </Section>
 
         <Section id="business" eyebrow="Why it lasts" title="Business model">
           <ul>
-            <li><strong>Routing fee:</strong> 10 to 30 bps integrator fee on routed conversions (LI.FI integrator fees), off during the beta.</li>
-            <li><strong>Merchant API:</strong> pay links, webhooks and payouts for platforms that pay people in USDC.</li>
-            <li><strong>Data:</strong> the minute-by-minute cross-issuer premium history, a dataset nobody else is collecting yet.</li>
+            <li><strong>Routing fee:</strong> a small fee of 10 to 30 basis points on routed trades, through LI.FI. It&apos;s switched off during the beta.</li>
+            <li><strong>Merchant API:</strong> pay links, notifications and payouts for platforms that pay people in USDC.</li>
+            <li><strong>Data:</strong> the price gap between issuers, recorded every few minutes. As far as we know, nobody else is collecting it yet.</li>
           </ul>
         </Section>
 
