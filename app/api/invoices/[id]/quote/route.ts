@@ -5,7 +5,7 @@ import { describe } from "@/lib/server/routes";
 import { buildUsdcTransfer } from "@/lib/server/solana-transfer";
 import { STABLES, type ChainKey } from "@/lib/registry";
 import { TEST_CHAIN_ID, TEST_CHAIN_LABEL, TEST_STABLES } from "@/lib/testnet";
-import { quoteExactOut, buildExactOutTx, isKnownToken, symbolOf } from "@/lib/server/synthra";
+import { quoteDesk, deskToken } from "@/lib/server/desk";
 import { solanaDevnetRpc } from "@/lib/server/testnet-clients";
 import { buildBaseToSolanaPayment } from "@/lib/server/cctp";
 
@@ -83,8 +83,8 @@ export async function POST(request: Request, ctx: RouteContext<"/api/invoices/[i
   }
 }
 
-// Testnet: same-chain USDC transfers on all three testnets, plus "pay with a stock" on Robinhood Chain Testnet, where one
-// Synthra exact-output swap sells the payer's stock and delivers exactly the invoiced USDC to the merchant.
+// Testnet: same-chain USDC transfers on all three testnets, plus "pay with a stock" on Robinhood Chain Testnet, where the
+// Fairtape desk sells the payer's stock at the live market price and delivers exactly the invoiced USDC to the merchant.
 async function testnetQuote(inv: Invoice, fromChain: ChainKey, fromToken: string, fromAddress: string) {
   // Cross-chain on testnet: Base Sepolia USDC → Solana Devnet via Circle CCTP V2 with the Forwarding Service.
   if (fromChain === "base" && inv.settle_chain === "solana") {
@@ -143,26 +143,27 @@ async function testnetQuote(inv: Invoice, fromChain: ChainKey, fromToken: string
         steps: [`Direct USDC transfer on ${TEST_CHAIN_LABEL[chain]}`],
       });
     }
-    if (inv.settle_chain !== "robinhood" || !isKnownToken(fromToken)) {
+    if (inv.settle_chain !== "robinhood" || !deskToken(fromToken)) {
       return Response.json({ error: "On this testnet, pay with test USDC." }, { status: 400 });
     }
-    const routes = await quoteExactOut(fromToken, settle.address, rawAmount);
-    const best = routes[0];
-    if (!best) return Response.json({ error: "No Synthra pool can sell enough of this token right now." }, { status: 404 });
-    const tx = buildExactOutTx(fromToken, best, inv.recipient);
+    // The Fairtape desk sells the payer's stock at the live real-world price and delivers exactly the invoiced USDC.
+    const q = await quoteDesk({ tokenIn: fromToken, tokenOut: settle.address, amount: rawAmount, mode: "exactOut", recipient: inv.recipient });
+    if (!q.enoughInventory) {
+      return Response.json({ error: `The testnet desk is short of USDC right now (it holds ${(Number(q.inventoryOut) / 1e18).toFixed(2)}). Try a smaller link or pay with test USDC.` }, { status: 409 });
+    }
+    const amountIn = Number(q.amountIn) / 1e18;
     return Response.json({
       kind: "evm-tx",
       network: "testnet",
       chainId: TEST_CHAIN_ID.robinhood,
       chainName: TEST_CHAIN_LABEL.robinhood,
-      tx,
-      fromAmount: best.amountIn,
-      fromSymbol: symbolOf(fromToken),
+      tx: q.tx,
+      fromAmount: q.amountIn,
+      fromSymbol: q.symbolIn,
       fromDecimals: 18,
-      usdIn: null,
-      shares: fromToken.toLowerCase() === settle.address.toLowerCase() ? null : Number(best.amountIn) / 1e18,
-      steps: [`Sell via Synthra · ${best.label}`, "USDC delivered straight to the merchant"],
-      alternatives: routes.length,
+      usdIn: amountIn * q.priceIn.usd,
+      shares: q.symbolIn === "ETH" ? null : amountIn,
+      steps: [`Sold at the live price, ${q.symbolIn} ${q.priceIn.usd.toLocaleString("en-US", { style: "currency", currency: "USD" })} (${q.priceIn.source})`, "Exactly the invoiced USDC goes straight to the merchant"],
     });
   } catch (e) {
     return Response.json({ error: e instanceof Error ? e.message.split("\n")[0] : "No route" }, { status: 502 });

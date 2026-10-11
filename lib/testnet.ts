@@ -45,13 +45,6 @@ export const TEST_STOCKS = [
 
 export type TestStock = (typeof TEST_STOCKS)[number];
 
-// Synthra V3 (Uniswap v3 fork), the DEX with liquidity for the test stocks on Robinhood Chain Testnet.
-export const SYNTHRA = {
-  factory: "0x911b4000D3422F482F4062a913885f7b035382Df",
-  router: "0x3Ce954107b1A675826B33bF23060Dd655e3758fE", // SwapRouter02 interface
-  quoter: "0x231606c321A99DE81e28fE48B07a93F1ba49e713", // QuoterV2
-  fees: [500, 3000, 10000],
-} as const;
 
 export const RH_TEST_USDC = { symbol: "USDC", address: "0xbf4479C07Dc6fdc6dAa764A0ccA06969e894275F", decimals: 18 } as const;
 export const RH_TEST_WETH = { symbol: "WETH", address: "0x33e4191705c386532ba27cBF171Db86919200B94", decimals: 18 } as const;
@@ -83,4 +76,10 @@ export const FAUCETS = {
   circle: "https://faucet.circle.com",
   baseEth: "https://portal.cdp.coinbase.com/products/faucet",
   solana: "https://faucet.solana.com",
+};
+
+// The Fairtape testnet desk: fills testnet trades and stock payments at the live real-world price (contracts/FairtapeDesk.sol).
+// Deployed 2026-10-11, owned by the project wallet. The server also needs DESK_SIGNER_KEY to sign quotes.
+export const DESK: { address: `0x${string}` | null } = {
+  address: (process.env.NEXT_PUBLIC_DESK_ADDRESS as `0x${string}` | undefined) || "0x0eb46917ee67622308a3748dc01a373d2e23108d",
 };

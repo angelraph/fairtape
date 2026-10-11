@@ -15,7 +15,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "How does it pick the best price?",
-    a: "On mainnet, it asks LI.FI, which pulls in Jupiter, 1inch, Kyberswap, Across, Relay, Circle CCTP, Mayan and others, for a real route to every venue. Then it ranks them by what actually lands in your wallet after fees, bridges and multipliers. On testnet, it checks every Synthra pool and two-step path onchain in one go. Either way, you see all the options and choose.",
+    a: "On mainnet, it asks LI.FI, which pulls in Jupiter, 1inch, Kyberswap, Across, Relay, Circle CCTP, Mayan and others, for a real route to every venue. Then it ranks them by what actually lands in your wallet after fees, bridges and multipliers. On testnet, our desk fills you at the live price of the real stock, so the numbers you see are real even though the tokens are free. Either way, you see what you'll get before you sign.",
   },
   {
     q: "How do I know a pay link was really paid?",

@@ -4,14 +4,13 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { encodeFunctionData, erc20Abi, type Address, type Hex } from "viem";
 import type { Invoice } from "@/lib/server/invoices";
-import type { SynthraTx } from "@/lib/server/synthra";
-import { TEST_CHAIN_LABEL, TEST_STABLES } from "@/lib/testnet";
+import { TEST_CHAIN_LABEL, TEST_STABLES, RH_TEST_WETH } from "@/lib/testnet";
 import { useTestHoldings } from "../use-test-holdings";
 import { useEvmTx, friendlyError, type EvmTx } from "../use-evm-tx";
 import { useSolanaWallet } from "../solana-wallet";
 import { WalletBar, openConnect } from "../connect";
 import { TxStatus } from "./test-trade";
-import { amount as fmtAmount } from "@/lib/format";
+import { amount as fmtAmount, usd } from "@/lib/format";
 
 type Quote = {
   kind: "evm-transfer" | "evm-tx" | "solana-tx";
@@ -20,13 +19,13 @@ type Quote = {
   token?: string;
   to?: string;
   amount?: string;
-  tx?: SynthraTx;
+  tx?: { to: Address; data: string; value: string; approve: { token: Address; spender: Address; amount: string } | null };
   transaction?: string;
   fromAmount: string;
   fromSymbol: string;
   fromDecimals: number;
   steps: string[];
-  alternatives?: number;
+  usdIn?: number | null;
 };
 
 function b64ToBytes(b64: string) {
@@ -44,7 +43,7 @@ export function TestPayer({ inv, onReported }: { inv: Invoice; onReported: () =>
   const chain = inv.settle_chain;
   const stable = TEST_STABLES[chain];
 
-  // On Robinhood Chain Testnet any stock, ETH or WETH can pay (sold via Synthra). Solana Devnet links can also be paid
+  // On Robinhood Chain Testnet any stock or ETH can pay (sold by the Fairtape desk at the live price). Solana Devnet links can also be paid
   // with Base Sepolia USDC through Circle CCTP. Otherwise: USDC on the settlement chain.
   const options = useMemo(
     () =>
@@ -52,7 +51,9 @@ export function TestPayer({ inv, onReported }: { inv: Invoice; onReported: () =>
         if (h.amount <= 0) return false;
         if (chain === "solana" && h.chain === "base") return h.token.toLowerCase() === TEST_STABLES.base.address.toLowerCase() && h.amount > inv.amount_usd;
         if (h.chain !== chain) return false;
-        return h.token.toLowerCase() === stable.address.toLowerCase() ? h.amount >= inv.amount_usd : chain === "robinhood";
+        if (h.token.toLowerCase() === stable.address.toLowerCase()) return h.amount >= inv.amount_usd;
+        // The desk trades ETH and the test stocks, not WETH.
+        return chain === "robinhood" && h.token.toLowerCase() !== RH_TEST_WETH.address.toLowerCase();
       }),
     [data, chain, stable.address, inv.amount_usd],
   );
@@ -172,13 +173,18 @@ export function TestPayer({ inv, onReported }: { inv: Invoice; onReported: () =>
               {fmtAmount(fromAmount, 6)} {q.fromSymbol}
             </span>
           </div>
+          {q.usdIn != null && (
+            <div className="flex justify-between small muted mt-1">
+              <span>Worth at the market price</span>
+              <span className="num">{usd(q.usdIn)}</span>
+            </div>
+          )}
           <div className="flex justify-between small mt-1">
             <span className="muted">{inv.merchant_name} receives exactly</span>
             <span className="num pos">{fmtAmount(inv.amount_usd, 2)} test USDC</span>
           </div>
           <div className="small faint mt-2">
             {q.steps.join(" → ")}
-            {q.alternatives && q.alternatives > 1 ? ` · cheapest of ${q.alternatives} paths` : ""}
           </div>
         </div>
       )}

@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Standalone Solidity test harness with its own dependencies.
+    "contracts/test/**",
   ]),
 ]);
 

@@ -2,7 +2,7 @@ import "server-only";
 import { erc20Abi, formatUnits, parseAbi, type Address } from "viem";
 import { rhTestClient, baseSepoliaClient, solanaDevnetRpc } from "./testnet-clients";
 import { TEST_STOCKS, TEST_STABLES, RH_TEST_WETH, type TestChain } from "@/lib/testnet";
-import { NATIVE_ETH } from "./synthra";
+import { NATIVE as NATIVE_ETH } from "./desk";
 
 export type TestHolding = {
   chain: TestChain;

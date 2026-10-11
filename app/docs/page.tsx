@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Faq } from "@/components/home/faq";
 import { Roadmap } from "@/components/home/roadmap";
 import { assets, CHAIN_LABEL } from "@/lib/registry";
-import { TEST_STOCKS, SYNTHRA, RH_TEST_USDC, TEST_STABLES, FAUCETS } from "@/lib/testnet";
+import { TEST_STOCKS, DESK, RH_TEST_USDC, TEST_STABLES, FAUCETS } from "@/lib/testnet";
 
 export const metadata = { title: "Docs | Fairtape" };
 
@@ -32,8 +32,8 @@ const API: [string, string, string][] = [
   ["GET", "/api/invoices/{id}", "A pay link, with its status checked against the chain again."],
   ["POST", "/api/invoices/{id}/quote", "How much of any asset it takes to pay a link: { fromChain, fromToken, fromAddress }."],
   ["POST", "/api/invoices/{id}", "Tell us about a signed payment, and the server checks it onchain."],
-  ["GET", "/api/testnet/tape", "Synthra pool prices for each Robinhood test stock, in every fee tier."],
-  ["POST", "/api/testnet/quote", "Prices every Synthra path. Add a recipient and you get the transaction to sign."],
+  ["GET", "/api/testnet/desk", "Live real-world prices for every testnet token, and how much the Fairtape desk can deliver."],
+  ["POST", "/api/testnet/quote", "A testnet trade at the live market price. Add a recipient and you get the signed transaction to send."],
   ["GET", "/api/testnet/balances?evm&solana", "Test balances on Robinhood Chain Testnet, Base Sepolia and Solana Devnet."],
 ];
 
@@ -134,7 +134,7 @@ export default function Docs() {
         <Section id="testnet" eyebrow="$0 to try" title="Testnet mode">
           <p>You can try every part of Fairtape on public testnets with free tokens. Each one is a real transaction:</p>
           <ul>
-            <li><strong>Trading:</strong> the official Robinhood test stocks ({TEST_STOCKS.map((s) => s.ticker).join(", ")}) on Synthra V3. We price every fee tier and every two-step path through USDC, WETH or TSLA in a single onchain call.</li>
+            <li><strong>Trading:</strong> the official Robinhood test stocks ({TEST_STOCKS.map((s) => s.ticker).join(", ")}) at the live price of the real stock. The Fairtape desk, a small contract on Robinhood Chain Testnet, only fills at a price our server has read from mainnet sources and signed, so a testnet trade costs what the real one would.</li>
             <li><strong>Pay with a stock:</strong> one swap on Robinhood Chain Testnet sells the stock and sends exactly the requested test USDC to the merchant.</li>
             <li><strong>Cross-chain:</strong> Base Sepolia to Solana Devnet through Circle CCTP. Circle delivers the USDC on Solana, and we wait until it lands before marking the link paid.</li>
           </ul>
@@ -144,7 +144,7 @@ export default function Docs() {
             <li><a href={FAUCETS.circle} target="_blank" rel="noreferrer">Circle faucet</a>: USDC on Base Sepolia and Solana Devnet</li>
             <li><a href={FAUCETS.baseEth} target="_blank" rel="noreferrer">Base Sepolia ETH</a> · <a href={FAUCETS.solana} target="_blank" rel="noreferrer">Solana devnet SOL</a></li>
           </ul>
-          <p>Testnet prices are whatever testers trade them at, not real market prices. What carries over to mainnet is how it all works.</p>
+          <p>The tokens are free test tokens, but every price is the real one. If no live price is available, the desk stops quoting instead of guessing. The desk only fills what it holds, so testnet trades are small.</p>
         </Section>
 
         <Section id="contracts" eyebrow="Verify us" title="Contracts & sources">
@@ -163,8 +163,7 @@ export default function Docs() {
                     <td className="num small break-all">{v.address}</td>
                   </tr>
                 ))}
-                <tr><td>Synthra router</td><td>n/a</td><td>Robinhood Testnet</td><td className="num small">{SYNTHRA.router}</td></tr>
-                <tr><td>Synthra QuoterV2</td><td>n/a</td><td>Robinhood Testnet</td><td className="num small">{SYNTHRA.quoter}</td></tr>
+                {DESK.address && <tr><td>Fairtape desk</td><td>Fairtape</td><td>Robinhood Testnet</td><td className="num small">{DESK.address}</td></tr>}
                 <tr><td>Test USDC</td><td>n/a</td><td>Robinhood Testnet</td><td className="num small">{RH_TEST_USDC.address}</td></tr>
                 <tr><td>USDC</td><td>Circle</td><td>Base Sepolia</td><td className="num small">{TEST_STABLES.base.address}</td></tr>
               </tbody>

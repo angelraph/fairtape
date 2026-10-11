@@ -57,12 +57,12 @@ components/              wallets, the transaction runner and the UI
 
 The tape always shows real mainnet prices. But you can run every transaction on public testnets with free faucet tokens at `/test`. Each one is a real signed transaction with an explorer link.
 
-* **Best print** runs on Robinhood Chain Testnet, using Robinhood's own test stocks (TSLA, AMZN, AMD, PLTR, NFLX) on Synthra, a Uniswap v3 fork. We quote every pool and every two-step path in one onchain call, rank them, and execute the best.
-* **Paying with a stock** also runs on Robinhood Chain Testnet. One swap sells the payer's test stock and sends exactly the requested test USDC straight to the merchant.
+* **Trading** runs on Robinhood Chain Testnet with Robinhood's own test stocks (TSLA, AMZN, AMD, PLTR, NFLX), always at the live price of the real stock. The Fairtape desk (`contracts/FairtapeDesk.sol`) only fills at a price our server read from mainnet sources and signed moments earlier, so no testnet pool can set the price.
+* **Paying with a stock** also runs on Robinhood Chain Testnet. The desk sells the payer's test stock at the live market price and sends exactly the requested test USDC straight to the merchant.
 * **Paying with USDC** works on Base Sepolia, Solana Devnet and Robinhood Chain Testnet, and the server confirms each payment from the chain.
 * **Paying across chains** goes from Base Sepolia to Solana Devnet with Circle CCTP. The payer signs once, Circle delivers on Solana (and opens the merchant's USDC account if needed), and the link is only marked paid once we see the USDC arrive.
 
-Testnet prices are set by whoever trades there, so the app labels them clearly. What carries over to mainnet is the mechanism itself: one token, several pools, several prices.
+The tokens are free, but every price on testnet is the real market price. If no live price is available, the desk stops quoting instead of guessing. It only fills what it holds, so testnet trades are small.
 
 A few honest limits on testnet: you can't bridge out of Robinhood Chain Testnet, LI.FI doesn't cover these testnets, and xStocks and Coinbase stocks only exist on mainnet. So test stock payments settle on Robinhood Chain Testnet, and the cross-chain demo moves USDC from Base Sepolia to Solana Devnet.
 
@@ -80,6 +80,7 @@ You don't need any keys. These settings are optional:
 * `LIFI_API_KEY`, `LIFI_INTEGRATOR`, `LIFI_FEE`: higher LI.FI limits, plus the small routing fee that is the business model.
 * `JUPITER_API_KEY`: Jupiter's paid price API.
 * `CRON_SECRET`: protects the snapshot endpoint, which a GitHub Action calls every five minutes to record price history.
+* `DESK_SIGNER_KEY` and `NEXT_PUBLIC_DESK_ADDRESS`: the key that signs testnet desk prices, and the desk's address. Deploy the desk with `node scripts/deploy-desk.mjs <owner address>`; its tests live in `contracts/test`.
 
 To rebuild the verified token list, run `node scripts/build-registry.mjs`.
 

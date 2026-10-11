@@ -1,14 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { parseUnits, type Address, type Hex } from "viem";
-import { TEST_STOCKS, RH_TEST_USDC, RH_TEST_WETH, TEST_CHAIN_ID, TEST_EXPLORER } from "@/lib/testnet";
-import type { SynthraRoute, SynthraTx } from "@/lib/server/synthra";
+import { TEST_STOCKS, RH_TEST_USDC, TEST_CHAIN_ID, TEST_EXPLORER } from "@/lib/testnet";
+import type { DeskQuote } from "@/lib/server/desk";
 import { useTestHoldings } from "../use-test-holdings";
 import { useEvmTx } from "../use-evm-tx";
 import { WalletBar, openConnect } from "../connect";
-import { amount as fmtAmount } from "@/lib/format";
+import { amount as fmtAmount, usd } from "@/lib/format";
+import { useDesk, priceOf } from "./use-desk";
 
 const ETH = "0x0000000000000000000000000000000000000000";
 type Side = "buy" | "sell";
@@ -17,60 +18,80 @@ type Token = { address: string; symbol: string };
 const FUNDING: Token[] = [
   { address: ETH, symbol: "ETH" },
   { address: RH_TEST_USDC.address, symbol: "USDC" },
-  { address: RH_TEST_WETH.address, symbol: "WETH" },
 ];
 const PROCEEDS: Token[] = [
   { address: RH_TEST_USDC.address, symbol: "USDC" },
-  { address: RH_TEST_WETH.address, symbol: "WETH" },
+  { address: ETH, symbol: "ETH" },
 ];
+
+function ago(ms: number) {
+  const s = Math.max(0, Math.round((Date.now() - ms) / 1000));
+  if (s < 90) return `${s}s ago`;
+  if (s < 5400) return `${Math.round(s / 60)}m ago`;
+  if (s < 172800) return `${Math.round(s / 3600)}h ago`;
+  return `${Math.round(s / 86400)}d ago`;
+}
 
 export function TestTrade({ initialTicker = "TSLA" }: { initialTicker?: string }) {
   const qc = useQueryClient();
   const [side, setSide] = useState<Side>("buy");
   const [ticker, setTicker] = useState(initialTicker);
-  const [other, setOther] = useState<string>(ETH);
-  const [amountStr, setAmountStr] = useState("0.001");
-  const [routes, setRoutes] = useState<SynthraRoute[] | null>(null);
+  const [other, setOther] = useState<string>(RH_TEST_USDC.address);
+  const [amountStr, setAmountStr] = useState("1");
+  const [quote, setQuote] = useState<DeskQuote | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [executing, setExecuting] = useState<string | null>(null);
+  const [executing, setExecuting] = useState(false);
   const { data, evmAddr } = useTestHoldings();
+  const { data: desk } = useDesk();
   const { state, run, reset } = useEvmTx();
 
   const stock = TEST_STOCKS.find((s) => s.ticker === ticker)!;
-  // Buying a stock can also be paid with another stock (stock-to-stock swap).
+  // Buying a stock can also be paid with another stock (stock-to-stock at both market prices).
   const counterOptions: Token[] = side === "buy" ? [...FUNDING, ...TEST_STOCKS.filter((s) => s.ticker !== ticker).map((s) => ({ address: s.address, symbol: s.ticker }))] : PROCEEDS;
   const counter = counterOptions.find((t) => t.address === other) ?? counterOptions[0];
   const tokenIn = side === "buy" ? counter : { address: stock.address, symbol: stock.ticker };
   const tokenOut = side === "buy" ? { address: stock.address, symbol: stock.ticker } : counter;
 
-  const balanceOf = (token: string) =>
-    data?.holdings.find((h) => h.chain === "robinhood" && h.token.toLowerCase() === token.toLowerCase())?.amount;
+  const balanceOf = (token: string) => data?.holdings.find((h) => h.chain === "robinhood" && h.token.toLowerCase() === token.toLowerCase())?.amount;
   const inBalance = balanceOf(tokenIn.address);
+  const stockPrice = priceOf(desk, stock.address)?.price;
+  const inPrice = priceOf(desk, tokenIn.address)?.price;
+  const typed = Number(amountStr);
+  const typedUsd = inPrice && typed > 0 ? typed * inPrice.usd : null;
 
-  const routeKey = (r: SynthraRoute) => `${r.tokens.join("-")}:${r.fees.join("-")}`;
-
-  async function compare() {
-    setError(null);
-    setRoutes(null);
-    reset();
-    let raw: bigint;
+  function parsed(): bigint | null {
     try {
-      raw = parseUnits(amountStr.trim() || "0", 18);
+      const raw = parseUnits(amountStr.trim() || "0", 18);
+      return raw > BigInt(0) ? raw : null;
     } catch {
-      return setError("Enter a valid amount.");
+      return null;
     }
-    if (raw <= BigInt(0)) return setError("Enter an amount above zero.");
+  }
+
+  async function getQuote(recipient?: string): Promise<DeskQuote | null> {
+    const raw = parsed();
+    if (!raw) {
+      setError("Enter an amount above zero.");
+      return null;
+    }
+    const res = await fetch("/api/testnet/quote", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ tokenIn: tokenIn.address, tokenOut: tokenOut.address, amount: raw.toString(), mode: "exactIn", recipient }),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Quote failed");
+    return json.quote;
+  }
+
+  async function preview() {
+    setError(null);
+    setQuote(null);
+    reset();
     setLoading(true);
     try {
-      const res = await fetch("/api/testnet/quote", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ tokenIn: tokenIn.address, tokenOut: tokenOut.address, amount: raw.toString() }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Quote failed");
-      setRoutes(json.routes);
+      setQuote(await getQuote());
     } catch (e) {
       setError(e instanceof Error ? e.message : "Quote failed");
     } finally {
@@ -78,38 +99,37 @@ export function TestTrade({ initialTicker = "TSLA" }: { initialTicker?: string }
     }
   }
 
-  async function execute(r: SynthraRoute) {
-    if (!evmAddr) return;
-    setExecuting(routeKey(r));
+  async function execute() {
+    if (!evmAddr) return openConnect();
+    setExecuting(true);
     setError(null);
-    // Re-quote this exact path right before signing so the minimum-received reflects current pool state.
-    const res = await fetch("/api/testnet/quote", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ tokenIn: tokenIn.address, tokenOut: tokenOut.address, amount: r.amountIn, recipient: evmAddr, pick: { tokens: r.tokens, fees: r.fees } }),
-    }).then((x) => x.json());
-    const tx = res.tx as (SynthraTx & { route: SynthraRoute }) | null;
-    if (!tx) {
-      setExecuting(null);
-      setError(res.error || "Route expired, compare again.");
-      return;
+    try {
+      // Fresh signed quote right before signing, so the price is the live one.
+      const q = await getQuote(evmAddr);
+      if (!q?.tx) throw new Error("Couldn't prepare the trade. Try again.");
+      if (!q.enoughInventory) throw new Error(`The desk only holds ${fmtAmount(Number(q.inventoryOut) / 1e18, 6)} ${q.symbolOut} right now. Try a smaller amount.`);
+      setQuote(q);
+      const hash = await run({
+        chainId: TEST_CHAIN_ID.robinhood,
+        chainName: "Robinhood Chain Testnet",
+        to: q.tx.to,
+        data: q.tx.data as Hex,
+        value: q.tx.value,
+        approve: q.tx.approve ? { ...q.tx.approve, token: q.tx.approve.token as Address, spender: q.tx.approve.spender as Address, symbol: q.symbolIn } : null,
+      });
+      if (hash) {
+        void qc.invalidateQueries({ queryKey: ["test-holdings"] });
+        void qc.invalidateQueries({ queryKey: ["desk"] });
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Trade failed");
+    } finally {
+      setExecuting(false);
     }
-    const hash = await run({
-      chainId: TEST_CHAIN_ID.robinhood,
-      chainName: "Robinhood Chain Testnet",
-      to: tx.to,
-      data: tx.data as Hex,
-      value: tx.value,
-      approve: tx.approve ? { ...tx.approve, token: tx.approve.token as Address, spender: tx.approve.spender as Address, symbol: tokenIn.symbol } : null,
-    });
-    setExecuting(null);
-    if (hash) void qc.invalidateQueries({ queryKey: ["test-holdings"] });
   }
 
-  const best = routes?.[0];
-  const worst = routes && routes.length > 1 ? routes.at(-1) : undefined;
-  const out = (r: SynthraRoute) => Number(r.amountOut) / 1e18;
-  const gain = useMemo(() => (best && worst ? out(best) - out(worst) : null), [best, worst]);
+  const amountIn = quote ? Number(quote.amountIn) / 1e18 : null;
+  const amountOut = quote ? Number(quote.amountOut) / 1e18 : null;
 
   return (
     <div className="grid lg:grid-cols-[380px_1fr] gap-6 items-start">
@@ -120,9 +140,9 @@ export function TestTrade({ initialTicker = "TSLA" }: { initialTicker?: string }
               key={s}
               onClick={() => {
                 setSide(s);
-                setOther(s === "buy" ? ETH : RH_TEST_USDC.address);
-                setAmountStr(s === "buy" ? "0.001" : "1");
-                setRoutes(null);
+                setOther(RH_TEST_USDC.address);
+                setAmountStr(s === "buy" ? "1" : "0.002");
+                setQuote(null);
               }}
               className={`h-9 rounded-lg text-sm capitalize ${side === s ? "bg-panel-2 text-text border border-line" : "text-muted"}`}
             >
@@ -132,20 +152,29 @@ export function TestTrade({ initialTicker = "TSLA" }: { initialTicker?: string }
         </div>
 
         <div>
-          <label className="label">Test stock (Robinhood Chain Testnet)</label>
-          <select className="input" value={ticker} onChange={(e) => { setTicker(e.target.value); setRoutes(null); }}>
-            {TEST_STOCKS.map((s) => (
-              <option key={s.ticker} value={s.ticker}>
-                {s.ticker} · {s.name}
-                {balanceOf(s.address) ? ` (you hold ${fmtAmount(balanceOf(s.address), 4)})` : ""}
-              </option>
-            ))}
+          <label className="label">Stock</label>
+          <select className="input" value={ticker} onChange={(e) => { setTicker(e.target.value); setQuote(null); }}>
+            {TEST_STOCKS.map((s) => {
+              const p = priceOf(desk, s.address)?.price;
+              return (
+                <option key={s.ticker} value={s.ticker}>
+                  {s.ticker} · {s.name}
+                  {p ? ` · ${usd(p.usd)}` : ""}
+                  {balanceOf(s.address) ? ` (you hold ${fmtAmount(balanceOf(s.address), 4)})` : ""}
+                </option>
+              );
+            })}
           </select>
+          {stockPrice && (
+            <p className="small muted mt-1.5">
+              Live price {usd(stockPrice.usd)} from {stockPrice.source}, updated {ago(stockPrice.asOf)}.
+            </p>
+          )}
         </div>
 
         <div>
           <label className="label">{side === "buy" ? "Pay with" : "Receive"}</label>
-          <select className="input" value={counter.address} onChange={(e) => { setOther(e.target.value); setRoutes(null); }}>
+          <select className="input" value={counter.address} onChange={(e) => { setOther(e.target.value); setQuote(null); }}>
             {counterOptions.map((t) => (
               <option key={t.address} value={t.address}>
                 {t.symbol}
@@ -168,70 +197,69 @@ export function TestTrade({ initialTicker = "TSLA" }: { initialTicker?: string }
               </button>
             )}
           </div>
-          <input className="input num" inputMode="decimal" value={amountStr} onChange={(e) => setAmountStr(e.target.value)} />
+          <input className="input num" inputMode="decimal" value={amountStr} onChange={(e) => { setAmountStr(e.target.value); setQuote(null); }} />
+          {typedUsd != null && <p className="small muted mt-1.5 num">≈ {usd(typedUsd)} at the market price</p>}
         </div>
 
-        <button className="btn btn-primary btn-lg" disabled={loading} onClick={compare}>
-          {loading ? "Quoting every pool…" : "Compare every pool"}
+        <button className="btn btn-primary btn-lg" disabled={loading || executing} onClick={preview}>
+          {loading ? "Getting the market price…" : "Get the market price"}
         </button>
         {error && <p className="small neg">{error}</p>}
         {!evmAddr && (
           <div className="small muted flex items-center justify-between gap-2">
-            <span>Preview: real testnet quotes, nothing to sign.</span>
+            <span>Preview with live prices. Connect to trade.</span>
             <WalletBar />
           </div>
         )}
       </div>
 
       <div className="grid gap-3">
-        {!routes && !loading && (
+        {!quote && !loading && (
           <div className="panel p-8 text-center muted">
-            <div className="text-text font-medium mb-1">
-              {side === "buy" ? `Which path gets you the most ${ticker}?` : `Which path pays the most for your ${ticker}?`}
-            </div>
-            Fairtape checks every Synthra pool on Robinhood Chain Testnet, every fee tier and every two-step path through USDC, WETH and
-            TSLA, all in one onchain call. Then it ranks them by what you actually get.
+            <div className="text-text font-medium mb-1">Trade at the real market price, with free test tokens</div>
+            On testnet, Fairtape&apos;s desk fills every trade at the live price of the real stock, read from Robinhood&apos;s market data
+            and checked against xStocks on Solana. The tokens are free test tokens, but the price is the real one.
           </div>
         )}
-        {loading && [0, 1, 2].map((i) => <div key={i} className="skeleton h-[76px]" />)}
-        {routes?.map((r, i) => {
-          const key = routeKey(r);
-          const isBest = i === 0;
-          return (
-            <div key={key} className={`panel p-4 ${isBest ? "!border-pos/50" : ""}`}>
-              <div className="flex items-center gap-4 flex-wrap">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="chain-dot chain-robinhood" />
-                    <span className="font-medium text-sm">{r.label}</span>
-                    {isBest && <span className="chip !border-pos/40 pos">BEST PRINT</span>}
-                  </div>
-                  <div className="small faint mt-1">Synthra V3 · gas ≈ {Number(r.gasEstimate).toLocaleString()}</div>
+        {loading && <div className="skeleton h-[180px]" />}
+        {quote && amountIn != null && amountOut != null && (
+          <div className="panel p-5 !border-pos/40">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="panel !bg-bg p-4">
+                <div className="label">You pay</div>
+                <div className="num text-2xl">
+                  {fmtAmount(amountIn, 6)} {quote.symbolIn}
                 </div>
-                <div className="text-right">
-                  <div className="num text-lg">
-                    {fmtAmount(out(r), 6)} {tokenOut.symbol}
-                  </div>
-                  {best && !isBest && (
-                    <div className="small neg num">{(((out(r) - out(best)) / out(best)) * 100).toFixed(2)}% vs best</div>
-                  )}
+                <div className="small muted num">{usd(amountIn * quote.priceIn.usd)}</div>
+              </div>
+              <div className="panel !bg-bg p-4">
+                <div className="label">You get</div>
+                <div className="num text-2xl pos">
+                  {fmtAmount(amountOut, 6)} {quote.symbolOut}
                 </div>
-                <button
-                  className={isBest ? "btn btn-primary" : "btn"}
-                  disabled={executing !== null}
-                  onClick={() => (evmAddr ? execute(r) : openConnect())}
-                >
-                  {executing === key ? "Executing…" : evmAddr ? "Execute" : "Connect to execute"}
-                </button>
+                <div className="small muted num">{usd(amountOut * quote.priceOut.usd)}</div>
               </div>
             </div>
-          );
-        })}
-        {gain != null && gain > 0 && best && (
-          <p className="small muted">
-            Best path vs worst path: <span className="text-text num">+{fmtAmount(gain, 6)} {tokenOut.symbol}</span> for the same{" "}
-            {fmtAmount(Number(best.amountIn) / 1e18, 6)} {tokenIn.symbol}.
-          </p>
+            <ul className="small muted mt-4 grid gap-1">
+              <li>
+                {quote.symbolIn} at {usd(quote.priceIn.usd)} · {quote.priceIn.source}
+              </li>
+              <li>
+                {quote.symbolOut} at {usd(quote.priceOut.usd)} · {quote.priceOut.source}
+              </li>
+              <li>
+                Filled by the Fairtape testnet desk at exactly these prices, with no spread.{" "}
+                {quote.enoughInventory ? (
+                  <>The desk holds {fmtAmount(Number(quote.inventoryOut) / 1e18, 6)} {quote.symbolOut}.</>
+                ) : (
+                  <span className="warn">The desk only holds {fmtAmount(Number(quote.inventoryOut) / 1e18, 6)} {quote.symbolOut}, so try a smaller amount.</span>
+                )}
+              </li>
+            </ul>
+            <button className="btn btn-primary btn-lg mt-5 w-full" disabled={executing || !quote.enoughInventory} onClick={execute}>
+              {executing ? "Trading…" : evmAddr ? "Trade at these prices" : "Connect to trade"}
+            </button>
+          </div>
         )}
         <TxStatus state={state} onReset={reset} />
       </div>

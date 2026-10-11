@@ -1,30 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import type { TestTapeRow } from "@/lib/server/synthra";
-import { TEST_EXPLORER } from "@/lib/testnet";
-import { amount as fmtAmount } from "@/lib/format";
+import { TEST_STOCKS, TEST_EXPLORER } from "@/lib/testnet";
+import { amount as fmtAmount, usd } from "@/lib/format";
+import { useDesk, priceOf } from "./use-desk";
+
+function ago(ms: number) {
+  const s = Math.max(0, Math.round((Date.now() - ms) / 1000));
+  if (s < 90) return `${s}s ago`;
+  if (s < 5400) return `${Math.round(s / 60)}m ago`;
+  if (s < 172800) return `${Math.round(s / 3600)}h ago`;
+  return `${Math.round(s / 86400)}d ago`;
+}
 
 export function TestTape() {
-  const { data, isLoading, error, refetch } = useQuery<{ asOf: string; rows: TestTapeRow[] }>({
-    queryKey: ["test-tape"],
-    queryFn: async () => {
-      const r = await fetch("/api/testnet/tape");
-      const j = await r.json();
-      if (!r.ok) throw new Error(j.error || "unavailable");
-      return j;
-    },
-    refetchInterval: 30_000,
-    // Public testnet RPCs and mobile networks drop requests now and then: retry quietly, keep the last good data.
-    retry: 6,
-    retryDelay: (n) => Math.min(1000 * 2 ** n, 8000),
-  });
+  const { data, isLoading, error, refetch } = useDesk();
   if (isLoading) return <div className="skeleton h-64" />;
   if (!data)
     return (
       <div className="panel p-6 small muted flex items-center justify-between gap-4 flex-wrap">
-        <span>Reconnecting to Robinhood Chain Testnet…{error ? " The public testnet node is busy; this retries automatically." : ""}</span>
+        <span>Reconnecting…{error ? " A price source is busy; this retries automatically." : ""}</span>
         <button className="btn" onClick={() => refetch()}>Retry now</button>
       </div>
     );
@@ -33,42 +28,46 @@ export function TestTape() {
       <table className="table">
         <thead>
           <tr>
-            <th>Test stock</th>
-            <th>Pools (fee tier → price in test USDC)</th>
-            <th>Spread across pools</th>
+            <th>Stock</th>
+            <th>Live market price</th>
+            <th>Source</th>
+            <th>Desk can deliver</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {data.rows.map((r) => {
-            const usable = r.pools.filter((p) => !p.thin);
-            const lo = Math.min(...usable.map((p) => p.priceUsdc));
+          {TEST_STOCKS.map((s) => {
+            const row = priceOf(data, s.address);
+            const held = row ? Number(row.inventory) / 1e18 : 0;
             return (
-              <tr key={r.ticker}>
+              <tr key={s.ticker}>
                 <td>
-                  <div className="font-medium">{r.ticker}</div>
-                  <div className="small faint">{r.name}</div>
+                  <div className="font-medium">{s.ticker}</div>
+                  <div className="small faint">{s.name}</div>
+                </td>
+                <td className="num">{row?.price ? usd(row.price.usd) : <span className="warn small">no live price, not quoting</span>}</td>
+                <td className="small muted">
+                  {row?.price ? (
+                    <>
+                      {row.price.source}
+                      <div className="faint" suppressHydrationWarning>{ago(row.price.asOf)}</div>
+                    </>
+                  ) : (
+                    "n/a"
+                  )}
+                </td>
+                <td className="num">
+                  {data.live ? (
+                    <>
+                      {fmtAmount(held, 4)} {s.ticker}
+                      {row?.inventoryUsd != null && <div className="small faint">{usd(row.inventoryUsd)}</div>}
+                    </>
+                  ) : (
+                    <span className="small faint">opening soon</span>
+                  )}
                 </td>
                 <td>
-                  <div className="flex flex-wrap gap-2 justify-end">
-                    {r.pools.map((p) => (
-                      <a
-                        key={p.pool}
-                        href={TEST_EXPLORER.robinhood.address(p.pool)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={`chip num hover:text-text ${p.thin ? "opacity-50" : p.priceUsdc === lo && usable.length > 1 ? "!border-pos/40 pos" : ""}`}
-                        title={`Pool ${p.pool} · ${fmtAmount(p.liquidityUsdc, 0)} test USDC deep`}
-                      >
-                        {(p.fee / 10000).toFixed(2)}% → {p.priceUsdc.toFixed(4)}
-                        {p.thin && " · thin"}
-                      </a>
-                    ))}
-                  </div>
-                </td>
-                <td className="num">{r.spreadBps == null ? "n/a" : `${fmtAmount(r.spreadBps, 0)} bp`}</td>
-                <td>
-                  <Link href={`/test/trade?t=${r.ticker}`} className="btn">Trade</Link>
+                  <Link href={`/test/trade?t=${s.ticker}`} className="btn">Trade</Link>
                 </td>
               </tr>
             );
@@ -76,8 +75,17 @@ export function TestTape() {
         </tbody>
       </table>
       <p className="small faint px-4 py-3 border-t border-line">
-        Read live from the Synthra pools on Robinhood Chain Testnet and refreshed every 30 seconds. Testers set these prices, not the
-        real market, so what matters is the pattern: one token, several pools, several prices. Green is the cheapest pool to buy from. Faded pools hold less than 50 test USDC, so we leave them out of the spread.
+        These are the real prices of the real stocks, refreshed every 20 seconds from Robinhood&apos;s market data, with xStocks on Solana as
+        a backup. On testnet, the Fairtape desk fills every trade at exactly this price with free test tokens. If no live price is
+        available, the desk stops quoting instead of guessing.
+        {data.address && (
+          <>
+            {" "}
+            <a className="underline hover:text-text" href={TEST_EXPLORER.robinhood.address(data.address)} target="_blank" rel="noreferrer">
+              See the desk contract ↗
+            </a>
+          </>
+        )}
       </p>
     </div>
   );
