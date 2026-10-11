@@ -43,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 {NAV.map((n) => (
                   <Link key={n.href} href={n.href} className="nav-link">{n.label}</Link>
                 ))}
-                <Link href="/test" className="chip !h-7 !px-3 !border-warn/40 warn hover:bg-warn/10 ml-2">Testnet · $0</Link>
+                <Link href="/test" className="chip !h-7 !px-3 !border-warn/40 warn hover:bg-warn/10 ml-2">Testnet (free)</Link>
               </nav>
               <div className="ml-auto">
                 <WalletBar />

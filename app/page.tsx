@@ -8,7 +8,7 @@ const DOORS = [
   { href: "/tape", tint: "tint-green", color: "pos", title: "Live tape", body: "One share, four issuers, three chains, priced per real share." },
   { href: "/trade", tint: "tint-lime", color: "text-[#d9ff4d]", title: "Best print", body: "Start from anything you hold. Land on the venue that gives you the most." },
   { href: "/pay", tint: "tint-blue", color: "text-[#7aa7ff]", title: "Pay links", body: "Ask for exact USDC. Let them pay with the stocks they hold." },
-  { href: "/test", tint: "tint-violet", color: "text-[#c4a6ff]", title: "Testnet · $0", body: "Every flow with free faucet tokens. Real transactions." },
+  { href: "/test", tint: "tint-violet", color: "text-[#c4a6ff]", title: "Testnet (free)", body: "Every flow with free faucet tokens. Real transactions." },
   { href: "/roadmap", tint: "tint-green", color: "pos", title: "Roadmap", body: "What shipped for the World's Fair, and what comes next." },
   { href: "/docs", tint: "tint-blue", color: "text-[#7aa7ff]", title: "Docs & FAQ", body: "How it works, contracts, API and answers." },
 ];

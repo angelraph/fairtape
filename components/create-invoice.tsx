@@ -67,7 +67,7 @@ export function CreateInvoice({ initialNetwork = "mainnet" }: { initialNetwork?:
             }}
             className={`h-9 rounded-lg text-sm ${network === n ? "bg-panel-2 text-text border border-line" : "text-muted"}`}
           >
-            {n === "mainnet" ? "Mainnet" : "Testnet ($0)"}
+            {n === "mainnet" ? "Mainnet" : "Testnet (free)"}
           </button>
         ))}
       </div>
