@@ -28,6 +28,8 @@ type Quote = {
   usdIn?: number | null;
 };
 
+const rank = (symbol: string) => (symbol === "ETH" ? 2 : symbol === "USDC" ? 1 : 0);
+
 function b64ToBytes(b64: string) {
   const bin = atob(b64);
   return Uint8Array.from(bin, (c) => c.charCodeAt(0));
@@ -54,7 +56,9 @@ export function TestPayer({ inv, onReported }: { inv: Invoice; onReported: () =>
         if (h.token.toLowerCase() === stable.address.toLowerCase()) return h.amount >= inv.amount_usd;
         // The desk trades ETH and the test stocks, not WETH.
         return chain === "robinhood" && h.token.toLowerCase() !== RH_TEST_WETH.address.toLowerCase();
-      }),
+      })
+        // Stocks first: paying with a stock is the point, and nobody should spend their gas money by accident.
+        .sort((a, b) => rank(a.symbol) - rank(b.symbol)),
     [data, chain, stable.address, inv.amount_usd],
   );
   const choice = options.find((h) => `${h.chain}:${h.token}` === selected) ?? options[0];
