@@ -10,6 +10,7 @@ import type { LifiQuote } from "@/lib/server/lifi";
 import { CHAIN_LABEL, EXPLORER, type ChainKey } from "@/lib/registry";
 import { EVM_CHAIN_ID } from "@/lib/chains";
 import { useHoldings } from "./use-holdings";
+import { PayingTo } from "./paying-to";
 import { useExecute } from "./use-execute";
 import { useSolanaWallet } from "./solana-wallet";
 import { WalletBar, short, openConnect } from "./connect";
@@ -276,6 +277,7 @@ function Payer({ inv, onReported }: { inv: Invoice; onReported: () => void }) {
       {error && <p className="small neg">{error}</p>}
       {state.step === "error" && <p className="small neg">{state.message}</p>}
       {(state.step === "signing" || state.step === "approving") && <p className="small muted">{state.message}</p>}
+      <PayingTo name={inv.merchant_name} recipient={inv.recipient} chainLabel={CHAIN_LABEL[inv.settle_chain]} href={EXPLORER[inv.settle_chain].address(inv.recipient)} />
       <button
         className="btn btn-primary btn-lg"
         disabled={connected && (!q || paying || quoting || inv.status === "pending")}

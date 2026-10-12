@@ -104,7 +104,7 @@ export function CreateInvoice({ initialNetwork = "mainnet" }: { initialNetwork?:
         </div>
       </div>
       <div>
-        <label className="label">Your {chainLabel} address</label>
+        <label className="label">Get paid at this {chainLabel} address</label>
         <input
           className="input num text-[13px]"
           value={recipient}
@@ -112,7 +112,11 @@ export function CreateInvoice({ initialNetwork = "mainnet" }: { initialNetwork?:
           placeholder={chain === "solana" ? "Solana address" : "0x…"}
           required
         />
-        <p className="small faint mt-1">Funds go straight to this address. Fairtape never holds them.</p>
+        <p className="small faint mt-1">
+          {typedRecipient === null && recipient
+            ? "Filled in from your connected wallet, so that's where you'll be paid. Paste any other address to get paid there instead."
+            : "Whoever pays this link sends the money straight to this address. Fairtape never holds it."}
+        </p>
       </div>
       {error && <p className="small neg">{error}</p>}
       <button className="btn btn-primary btn-lg" disabled={busy}>{busy ? "Creating…" : network === "testnet" ? "Create test pay link" : "Create pay link"}</button>

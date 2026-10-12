@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { encodeFunctionData, erc20Abi, type Address, type Hex } from "viem";
 import type { Invoice } from "@/lib/server/invoices";
-import { TEST_CHAIN_LABEL, TEST_STABLES, RH_TEST_WETH } from "@/lib/testnet";
+import { TEST_CHAIN_LABEL, TEST_EXPLORER, TEST_STABLES, RH_TEST_WETH } from "@/lib/testnet";
+import { PayingTo } from "../paying-to";
 import { useTestHoldings } from "../use-test-holdings";
 import { useEvmTx, friendlyError, type EvmTx } from "../use-evm-tx";
 import { useSolanaWallet } from "../solana-wallet";
@@ -196,6 +197,7 @@ export function TestPayer({ inv, onReported }: { inv: Invoice; onReported: () =>
       )}
       {error && <p className="small neg">{error}</p>}
       <TxStatus state={state} chain={payChain === "base" ? "base" : "robinhood"} />
+      <PayingTo name={inv.merchant_name} recipient={inv.recipient} chainLabel={TEST_CHAIN_LABEL[chain]} href={TEST_EXPLORER[chain].address(inv.recipient)} />
       <button className="btn btn-primary btn-lg" disabled={connected && (!q || paying || inv.status === "pending")} onClick={connected ? pay : openConnect}>
         {!connected
           ? "Connect a wallet to pay"
