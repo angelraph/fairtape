@@ -1,5 +1,6 @@
 import { TestTrade } from "@/components/testnet/test-trade";
 import { TEST_STOCKS } from "@/lib/testnet";
+import { TestFunds } from "@/components/testnet/test-funds";
 
 export const metadata = { title: "Testnet best print | Fairtape" };
 
@@ -11,10 +12,11 @@ export default async function TestTradePage({ searchParams }: PageProps<"/test/t
     <div className="mx-auto max-w-6xl px-4 py-10">
       <span className="chip !border-warn/40 warn">TESTNET · Robinhood Chain Testnet · free faucet tokens</span>
       <h1 className="text-3xl font-semibold tracking-tight mt-3">Best print (testnet)</h1>
-      <p className="muted mt-2 mb-8 max-w-2xl">
+      <p className="muted mt-2 max-w-2xl">
         Trade Robinhood&apos;s official test stocks. Fairtape checks every pool and path onchain, then runs whichever one gives you the
         most. You sign it in your own wallet.
       </p>
+      <TestFunds className="mt-4 mb-8" />
       <TestTrade initialTicker={ticker} />
     </div>
   );

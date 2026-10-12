@@ -10,6 +10,7 @@ import { useEvmTx, friendlyError, type EvmTx } from "../use-evm-tx";
 import { useSolanaWallet } from "../solana-wallet";
 import { WalletBar, openConnect } from "../connect";
 import { TxStatus } from "./test-trade";
+import { TestFunds } from "./test-funds";
 import { amount as fmtAmount, usd } from "@/lib/format";
 
 type Quote = {
@@ -140,6 +141,7 @@ export function TestPayer({ inv, onReported }: { inv: Invoice; onReported: () =>
     <div className="panel p-5 grid gap-4">
       <div className="font-medium">Pay with test tokens</div>
       <p className="small warn -mt-2">Testnet: free faucet tokens, real onchain transaction.</p>
+      {chain === "robinhood" && <TestFunds className="-mt-1" />}
       {!connected && (
         <div className="grid gap-3">
           <p className="small muted">

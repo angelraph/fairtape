@@ -50,10 +50,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </div>
             </div>
             <nav className="md:hidden flex items-center gap-1 text-sm px-3 pb-2 overflow-x-auto no-scrollbar">
+              {/* Testnet goes first on phones: the row scrolls sideways, so items at the end are off screen. */}
+              <Link href="/test" className="chip !h-7 !px-3 !border-warn/40 warn shrink-0">Testnet (free)</Link>
               {NAV.map((n) => (
                 <Link key={n.href} href={n.href} className="nav-link shrink-0">{n.label}</Link>
               ))}
-              <Link href="/test" className="nav-link warn shrink-0">Testnet</Link>
             </nav>
           </header>
           <main className="flex-1">{children}</main>
