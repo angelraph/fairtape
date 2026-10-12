@@ -1,0 +1,9 @@
+# Never upload local secrets or data when deploying from the CLI.
+.env*
+.data
+.next
+node_modules
+contracts/test/node_modules
+contracts/test/artifacts.json
+AGENTS.md
+CLAUDE.md
