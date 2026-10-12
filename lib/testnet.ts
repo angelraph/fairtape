@@ -71,6 +71,14 @@ export const TEST_EXPLORER: Record<TestChain, { tx: (h: string) => string; addre
   },
 };
 
+// Synthra V3 (a Uniswap v3 fork) is the only place to get Robinhood Chain Testnet USDC: no faucet hands it out.
+// Its prices are arbitrary testnet numbers, so it is used only to get test USDC, never to price anything.
+export const SYNTHRA = {
+  router: "0x3Ce954107b1A675826B33bF23060Dd655e3758fE",
+  quoter: "0x231606c321A99DE81e28fE48B07a93F1ba49e713",
+  ethUsdcFee: 500,
+} as const;
+
 export const FAUCETS = {
   robinhood: "https://faucet.testnet.chain.robinhood.com",
   circle: "https://faucet.circle.com",

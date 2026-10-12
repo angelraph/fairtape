@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TestWallet } from "@/components/testnet/test-wallet";
 import { TestTape } from "@/components/testnet/test-tape";
+import { GetTestUsdc } from "@/components/testnet/get-usdc";
 
 export const metadata = { title: "Testnet | Fairtape" };
 
@@ -20,6 +21,7 @@ export default function TestnetHome() {
         </div>
       </div>
       <TestWallet />
+      <GetTestUsdc />
       <section>
         <h2 className="text-xl font-semibold tracking-tight mb-1">Testnet tape</h2>
         <p className="muted small mb-4">The same split-up market as mainnet, so you can see it for yourself with free tokens.</p>

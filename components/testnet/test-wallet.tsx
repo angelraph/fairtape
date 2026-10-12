@@ -54,7 +54,8 @@ export function TestWallet() {
           </Step>
           <Step n={4} done={has("base", "stable") || has("solana", "stable")} title="Claim test USDC (for pay links)">
             <Ext href={FAUCETS.circle}>Circle faucet</Ext>: USDC on Base Sepolia and/or Solana Devnet. Gas:{" "}
-            <Ext href={FAUCETS.baseEth}>Base Sepolia ETH</Ext>, <Ext href={FAUCETS.solana}>devnet SOL</Ext>.
+            <Ext href={FAUCETS.baseEth}>Base Sepolia ETH</Ext>, <Ext href={FAUCETS.solana}>devnet SOL</Ext>. For USDC on Robinhood Chain Testnet, use the
+            swap below.
           </Step>
         </ol>
         {!evm.address && !sol.account && (
