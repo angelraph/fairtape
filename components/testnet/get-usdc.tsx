@@ -96,7 +96,7 @@ export function GetTestUsdc() {
   }
 
   return (
-    <div className="panel p-5">
+    <div id="get-usdc" className="panel p-5 scroll-mt-24">
       <div className="font-medium">Get test USDC on Robinhood Chain Testnet</div>
       <p className="small muted mt-1 max-w-2xl">
         No faucet hands out this USDC. The only source is Synthra, a testnet exchange, so this swaps a little of your faucet ETH for it. Synthra&apos;s rate is an

@@ -18,6 +18,7 @@ export default function TestnetHome() {
         <div className="flex gap-3 mt-5 flex-wrap">
           <Link href="/test/trade" className="btn btn-primary btn-lg">Trade test stocks</Link>
           <Link href="/pay/new?net=test" className="btn btn-lg">Create a test pay link</Link>
+          <a href="#get-usdc" className="btn btn-lg">Get test USDC</a>
         </div>
       </div>
       <TestWallet />
