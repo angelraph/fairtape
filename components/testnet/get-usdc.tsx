@@ -5,7 +5,7 @@ import { useAccount } from "wagmi";
 import { createPublicClient, encodeFunctionData, encodePacked, formatUnits, http, parseEther, type Address } from "viem";
 import { useEvmTx } from "../use-evm-tx";
 import { TxStatus } from "./test-trade";
-import { DESK, RH_TEST_USDC, RH_TEST_WETH, SYNTHRA, TEST_CHAIN_LABEL, robinhoodTestnet } from "@/lib/testnet";
+import { DESK, FAUCETS, RH_TEST_USDC, RH_TEST_WETH, SYNTHRA, TEST_CHAIN_LABEL, robinhoodTestnet } from "@/lib/testnet";
 
 const client = createPublicClient({ chain: robinhoodTestnet, transport: http() });
 
@@ -104,7 +104,12 @@ export function GetTestUsdc() {
       </p>
       <div className="grid sm:grid-cols-[1fr_auto] gap-3 mt-4 items-end">
         <label className="grid gap-1">
-          <span className="small muted">Test ETH to swap</span>
+          <span className="small muted">
+            Test ETH to swap ·{" "}
+            <a className="underline hover:text-text" href={FAUCETS.robinhood} target="_blank" rel="noreferrer">
+              need test ETH? Free faucet ↗
+            </a>
+          </span>
           <input className="input num" inputMode="decimal" value={eth} onChange={(e) => setEth(e.target.value.replace(/[^0-9.]/g, ""))} />
         </label>
         <div className="small muted num pb-2">
